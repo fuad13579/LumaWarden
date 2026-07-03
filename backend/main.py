@@ -1,4 +1,4 @@
-"""FastAPI application entry point for BidyutWarden backend."""
+"""FastAPI application entry point for LumaWarden backend."""
 
 from __future__ import annotations
 
@@ -29,7 +29,7 @@ async def lifespan(app: FastAPI):
 		await _cancel_simulator_task(app)
 
 
-app = FastAPI(title="BidyutWarden Backend", lifespan=lifespan)
+app = FastAPI(title="LumaWarden Backend", lifespan=lifespan)
 
 app.add_middleware(
 	CORSMiddleware,
