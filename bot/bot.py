@@ -25,7 +25,7 @@ from messages import (
 )
 
 DEFAULT_API_BASE = "http://127.0.0.1:8000"
-DEFAULT_ALERT_INTERVAL_SECONDS = 60
+DEFAULT_ALERT_INTERVAL_SECONDS = 300
 
 
 class BackendClient:
