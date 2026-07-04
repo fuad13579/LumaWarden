@@ -76,7 +76,7 @@ export function ConnectionStatus({
       </div>
 
       <div
-        className={`inline-flex w-fit items-center gap-3 rounded-full border px-4 py-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.2)] backdrop-blur-sm ${config.badge}`}
+        className={`inline-flex w-fit items-center gap-3 rounded-full border px-4 py-2.5 shadow-[0_10px_26px_rgba(0,0,0,0.22)] backdrop-blur-sm ${config.badge}`}
         aria-label={`Connection status: ${connectionState}`}
       >
         <span className="relative flex h-2.5 w-2.5 shrink-0">
@@ -91,7 +91,7 @@ export function ConnectionStatus({
             aria-hidden="true"
           />
         </span>
-        <span className={`text-sm font-medium capitalize ${config.label}`}>
+        <span className={`text-sm font-semibold capitalize tracking-[0.02em] ${config.label}`}>
           {connectionState}
         </span>
       </div>

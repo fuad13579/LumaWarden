@@ -40,10 +40,10 @@ function RoomFurniture({ room }: { room: RoomName }) {
 
   return (
     <>
-      <div className="absolute left-[8%] top-[22%] h-[24%] w-[32%] rounded-[1rem] border border-white/10 bg-[#202633] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" />
-      <div className="absolute right-[8%] top-[22%] h-[24%] w-[32%] rounded-[1rem] border border-white/10 bg-[#202633] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" />
-      <div className="absolute bottom-[11%] left-[14%] h-[20%] w-[32%] rounded-[1rem] border border-white/10 bg-[#232a35] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" />
-      <div className="absolute bottom-[11%] right-[14%] h-[20%] w-[32%] rounded-[1rem] border border-white/10 bg-[#232a35] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" />
+      <div className="absolute left-[8%] top-[22%] h-[24%] w-[32%] rounded-[1rem] border border-white/10 bg-[#202633] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_20px_rgba(0,0,0,0.18)]" />
+      <div className="absolute right-[8%] top-[22%] h-[24%] w-[32%] rounded-[1rem] border border-white/10 bg-[#202633] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_20px_rgba(0,0,0,0.18)]" />
+      <div className="absolute bottom-[11%] left-[14%] h-[20%] w-[32%] rounded-[1rem] border border-white/10 bg-[#232a35] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_20px_rgba(0,0,0,0.18)]" />
+      <div className="absolute bottom-[11%] right-[14%] h-[20%] w-[32%] rounded-[1rem] border border-white/10 bg-[#232a35] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_20px_rgba(0,0,0,0.18)]" />
       <div className="absolute bottom-[18%] left-[49%] h-[14%] w-[12%] -translate-x-1/2 rounded-[0.75rem] border border-white/10 bg-[#1c212a] shadow-[0_8px_18px_rgba(0,0,0,0.24)]" />
       <div className="absolute bottom-[31%] left-[20%] h-[5%] w-[15%] rounded-full border border-white/5 bg-[#1b2028]" />
       <div className="absolute bottom-[31%] right-[20%] h-[5%] w-[15%] rounded-full border border-white/5 bg-[#1b2028]" />
@@ -127,21 +127,21 @@ export function OfficeLayout({ devices }: OfficeLayoutProps) {
             className="room-floor min-h-[19rem]"
             aria-label={`${room.name} visual status`}
           >
-            <div className="absolute inset-x-0 top-0 z-10 border-b border-white/6 bg-bg-card/85 px-5 py-3 backdrop-blur-sm">
-              <h3 className="truncate text-center text-sm font-semibold tracking-tight text-text-primary">
+            <div className="absolute inset-x-0 top-0 z-10 border-b border-white/10 bg-[linear-gradient(180deg,rgba(23,27,34,0.92),rgba(17,20,27,0.86))] px-5 py-3 backdrop-blur-sm">
+              <h3 className="truncate text-center text-sm font-semibold tracking-[0.02em] text-text-primary">
                 {room.name}
               </h3>
             </div>
 
             <div className="room-floor-grid absolute inset-0 opacity-80" aria-hidden="true" />
-            <div className="absolute inset-[7%] rounded-[1.25rem] border-[8px] border-[#2f3742] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" aria-hidden="true" />
+            <div className="absolute inset-[7%] rounded-[1.25rem] border-[8px] border-[#2f3742] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_24px_rgba(0,0,0,0.18)]" aria-hidden="true" />
             <div className="absolute inset-x-[14%] top-[15%] h-[10%] rounded-[0.75rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
             <div className="absolute left-[10%] top-[24%] h-[10%] w-[10%] rounded-[0.6rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
             <div className="absolute right-[10%] top-[24%] h-[10%] w-[10%] rounded-[0.6rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
             <div className="absolute bottom-[9%] left-[14%] h-[7%] w-[10%] rounded-[0.6rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
             <div className="absolute bottom-[9%] right-[14%] h-[7%] w-[10%] rounded-[0.6rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
             <div
-              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_80%,rgb(245_158_11/0.08),transparent)]"
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_80%,rgba(245,158,11,0.08),transparent)]"
               aria-hidden="true"
             />
 

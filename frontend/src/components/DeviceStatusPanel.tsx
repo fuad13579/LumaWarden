@@ -22,7 +22,7 @@ function LoadingSkeleton() {
             {Array.from({ length: 5 }, (_, index) => (
               <div
                 key={index}
-                className="h-14 animate-pulse rounded-xl bg-bg-surface/80"
+                className="skeleton-shimmer h-14 rounded-xl bg-bg-surface/80"
               />
             ))}
           </div>

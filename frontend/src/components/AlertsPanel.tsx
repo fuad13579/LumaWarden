@@ -1,4 +1,4 @@
-import { CheckCircle } from "lucide-react";
+import { AlertCircle, CheckCircle, Sparkles } from "lucide-react";
 import { useMemo } from "react";
 import type { Alert } from "../types/device";
 
@@ -65,12 +65,12 @@ export function AlertsPanel({ alerts, isLoading }: AlertsPanelProps) {
           {[0, 1, 2].map((item) => (
             <div
               key={item}
-              className="h-[4.5rem] animate-pulse rounded-lg border border-white/5 bg-bg-surface/60"
+              className="skeleton-shimmer h-[4.5rem] rounded-[0.95rem] border border-white/5 bg-bg-surface/60"
             />
           ))}
         </div>
       ) : alerts.length === 0 ? (
-        <div className="mt-5 flex items-center gap-3.5 alert-card">
+        <div className="mt-5 flex items-center gap-3.5 rounded-[1rem] border border-white/8 bg-[linear-gradient(145deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
           <CheckCircle className="h-5 w-5 shrink-0 text-accent-power" aria-hidden="true" />
           <p className="text-sm font-medium text-text-primary">No active alerts — all clear</p>
         </div>
@@ -82,23 +82,30 @@ export function AlertsPanel({ alerts, isLoading }: AlertsPanelProps) {
             return (
               <article
                 key={alert.id}
-                className={`alert-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(0,0,0,0.28)] ${config.accent} ${config.surface}`}
+                className={`alert-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_28px_rgba(0,0,0,0.24)] ${config.accent} ${config.surface}`}
               >
                 <div className="flex items-start justify-between gap-3">
-                  <p className="text-sm font-medium leading-relaxed text-text-primary">
-                    {alert.message}
-                  </p>
+                  <div className="flex min-w-0 items-start gap-3">
+                    <span className="mt-0.5 rounded-xl border border-white/10 bg-bg-card/70 p-2 text-accent-light shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+                      <AlertCircle className="h-3.5 w-3.5" aria-hidden="true" />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-sm font-medium leading-relaxed text-text-primary">
+                        {alert.message}
+                      </p>
+                      <p className="mt-2 text-[0.68rem] uppercase tracking-[0.16em] text-text-secondary">
+                        <span className="text-text-primary/80">{alert.room}</span>
+                        <span className="mx-1.5 text-white/20">·</span>
+                        <span className="font-data">{formatCreatedAt(alert.created_at)}</span>
+                      </p>
+                    </div>
+                  </div>
                   <span
                     className={`font-data shrink-0 rounded-md px-2 py-0.5 text-[0.675rem] font-semibold uppercase tracking-wider ${config.badge}`}
                   >
                     {alert.severity}
                   </span>
                 </div>
-                <p className="mt-3 text-xs text-text-secondary">
-                  <span className="text-text-primary/80">{alert.room}</span>
-                  <span className="mx-1.5 text-white/20">·</span>
-                  <span className="font-data">{formatCreatedAt(alert.created_at)}</span>
-                </p>
               </article>
             );
           })}

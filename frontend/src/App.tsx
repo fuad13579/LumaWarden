@@ -89,7 +89,7 @@ function App() {
         </aside>
 
         <section
-          className="relative mx-auto flex min-h-screen w-full max-w-[1500px] flex-col gap-7 px-4 py-4 sm:gap-8 sm:px-6 lg:px-8 lg:py-8"
+          className="premium-shell fade-in-up relative mx-auto flex min-h-screen w-full max-w-[1500px] flex-col gap-7 px-4 py-4 sm:gap-8 sm:px-6 lg:px-8 lg:py-8"
           aria-label="LumaWarden dashboard"
         >
           <TopHeader
@@ -101,7 +101,7 @@ function App() {
           />
           {showFailureBanner ? (
           <div
-            className="flex items-center justify-between gap-4 rounded-2xl border border-accent-light/20 bg-accent-light/10 px-5 py-3.5 shadow-[0_8px_24px_rgba(0,0,0,0.25)] backdrop-blur-sm"
+            className="flex items-center justify-between gap-4 rounded-[1.25rem] border border-accent-light/20 bg-[linear-gradient(135deg,rgba(245,158,11,0.16),rgba(245,158,11,0.08))] px-5 py-3.5 shadow-[0_14px_34px_rgba(0,0,0,0.24)] backdrop-blur-sm"
             role="status"
           >
             <p className="text-sm font-medium text-text-primary">
@@ -126,24 +126,24 @@ function App() {
 
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {summaryCards.map(({ label, value, icon: Icon, accent, tone }) => (
-            <div key={label} className={`summary-card relative overflow-hidden bg-gradient-to-br ${tone}`}>
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.06),transparent_55%)]" />
+            <div key={label} className={`summary-card relative overflow-hidden rounded-[1.3rem] bg-gradient-to-br ${tone}`}>
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.08),transparent_55%)]" />
               <div className="relative flex items-center justify-between gap-2">
                 <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-text-secondary">
                   {label}
                 </p>
-                <span className={`rounded-xl border border-white/10 bg-bg-card/70 p-2 ${accent}`}>
+                <span className={`icon-shell rounded-2xl p-2.5 ${accent}`}>
                   <Icon className="h-3.5 w-3.5" />
                 </span>
               </div>
-              <p className="relative mt-4 text-2xl font-semibold tracking-tight text-text-primary sm:text-[1.7rem]">
+              <p className="relative mt-5 text-2xl font-semibold tracking-tight text-text-primary sm:text-[1.7rem]">
                 {value}
               </p>
             </div>
           ))}
         </div>
 
-        <div className="rounded-[1.5rem] border border-white/5 bg-black/10 p-2 shadow-[0_20px_48px_rgba(0,0,0,0.24)]">
+        <div className="rounded-[1.6rem] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))] p-2 shadow-[0_24px_64px_rgba(0,0,0,0.28)]">
           <OfficeLayout devices={stream.devices} />
         </div>
 

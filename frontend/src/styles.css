@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
 @import "tailwindcss";
 
 :root {
@@ -5,6 +6,7 @@
   --bg-base: #0b0f14;
   --bg-card: #171b22;
   --bg-surface: #1f2632;
+  --border-soft: rgba(255, 255, 255, 0.05);
   --accent-light: #f59e0b;
   --accent-power: #52f2d5;
   --success: #22c55e;
@@ -12,10 +14,11 @@
   --text-primary: #ffffff;
   --text-secondary: #aab2bf;
   --muted: #8e98a8;
-  --radius-lg: 1.125rem;
+  --radius-lg: 1.25rem;
   --radius-md: 1rem;
-  --shadow-elevated: 0 24px 56px rgb(0 0 0 / 0.44), 0 8px 22px rgb(0 0 0 / 0.24);
-  --shadow-soft: 0 14px 36px rgb(0 0 0 / 0.34), 0 2px 12px rgb(0 0 0 / 0.24);
+  --shadow-elevated: 0 24px 56px rgba(0, 0, 0, 0.44), 0 8px 22px rgba(0, 0, 0, 0.24);
+  --shadow-soft: 0 14px 36px rgba(0, 0, 0, 0.34), 0 2px 12px rgba(0, 0, 0, 0.24);
+  --shadow-premium: 0 24px 70px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.05);
   --heading-1: 1.75rem;
   --heading-2: 1.25rem;
   --body-size: 0.9375rem;
@@ -38,16 +41,24 @@
     Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
+html {
+  background: var(--bg-base);
+}
+
 body {
   margin: 0;
   min-width: 320px;
   color: var(--text-primary);
   background:
-    radial-gradient(ellipse at top left, rgba(245, 158, 11, 0.09), transparent 28%),
-    radial-gradient(ellipse at bottom right, rgba(82, 242, 213, 0.06), transparent 24%),
+    radial-gradient(ellipse at top left, rgba(245, 158, 11, 0.1), transparent 30%),
+    radial-gradient(ellipse at bottom right, rgba(82, 242, 213, 0.08), transparent 24%),
     linear-gradient(135deg, #0b0f14 0%, #10151b 100%);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
 }
 
 button,
@@ -59,28 +70,38 @@ select {
 
 @layer components {
   .glass-card {
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid var(--border-soft);
     border-radius: 1.25rem;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.012));
     box-shadow:
-      0 24px 54px rgba(0, 0, 0, 0.38),
+      0 24px 56px rgba(0, 0, 0, 0.4),
       inset 0 1px 0 rgba(255, 255, 255, 0.05),
-      0 2px 10px rgba(0, 0, 0, 0.24);
+      0 2px 10px rgba(0, 0, 0, 0.22);
     backdrop-filter: blur(18px);
     transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease;
   }
 
+  .glass-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.12), transparent 32%, transparent 70%, rgba(255, 255, 255, 0.04));
+    pointer-events: none;
+  }
+
   .glass-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.44), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    transform: translateY(-4px);
+    box-shadow: 0 32px 70px rgba(0, 0, 0, 0.46), inset 0 1px 0 rgba(255, 255, 255, 0.07);
     border-color: rgba(255, 255, 255, 0.09);
   }
 
   .surface-nested {
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 0.95rem;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(255, 255, 255, 0.012));
-    backdrop-filter: blur(8px);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    backdrop-filter: blur(10px);
     transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
   }
 
@@ -89,16 +110,103 @@ select {
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
   }
 
+  .premium-shell {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 2rem;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+    box-shadow: 0 36px 90px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.03);
+  }
+
+  .skeleton-shimmer {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+    background-size: 200% 100%;
+    animation: shimmer 1.2s linear infinite;
+  }
+
+  .skeleton-shimmer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+    transform: translateX(-100%);
+    animation: shimmer-slide 1.2s ease-in-out infinite;
+  }
+
+  .fade-in-up {
+    animation: fade-in-up 500ms ease both;
+  }
+
+  .button-premium {
+    transition: transform 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
+  }
+
+  .button-premium:hover {
+    transform: translateY(-1px);
+  }
+
+  .button-premium:active {
+    transform: translateY(0);
+  }
+
+  .premium-search {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.1rem;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(10, 14, 20, 0.8));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 -8px 24px rgba(0, 0, 0, 0.16);
+    backdrop-filter: blur(16px);
+    transition: border-color 180ms ease, box-shadow 180ms ease, transform 180ms ease;
+  }
+
+  .premium-search:focus-within {
+    border-color: rgba(245, 158, 11, 0.38);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 0 3px rgba(245, 158, 11, 0.12);
+  }
+
+  .brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(245, 158, 11, 0.22);
+    background: linear-gradient(145deg, rgba(245, 158, 11, 0.16), rgba(245, 158, 11, 0.06));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 10px 24px rgba(0, 0, 0, 0.22);
+  }
+
+  .icon-shell {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 10px 24px rgba(0, 0, 0, 0.22);
+  }
+
+  .kpi-card {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1rem 1.05rem;
+    border-radius: 1.2rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    min-width: 3.5rem;
+    text-align: right;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+    transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+  }
+
+  .kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  }
+
   .panel-label {
     font-size: 0.72rem;
     font-weight: 600;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--muted);
   }
 
   .panel-title {
-    font-size: 1.08rem;
+    font-size: 1.06rem;
     font-weight: 700;
     letter-spacing: -0.01em;
     color: var(--text-primary);
@@ -126,10 +234,10 @@ select {
   .kpi-large {
     font-family: var(--font-mono);
     font-variant-numeric: tabular-nums;
-    font-size: 2rem;
-    line-height: 1;
+    font-size: 2.05rem;
+    line-height: 1.02;
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.03em;
     color: var(--text-primary);
   }
 
@@ -175,17 +283,17 @@ select {
   }
 
   .summary-card {
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 1.125rem;
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
-    box-shadow: 0 16px 34px rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 1.2rem;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.01));
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.04);
     padding: 1rem 1rem 1.1rem;
     transition: transform 180ms ease, box-shadow 180ms ease;
   }
 
   .summary-card:hover {
     transform: translateY(-3px);
-    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.34);
+    box-shadow: 0 22px 48px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
   .alert-card:hover {
@@ -205,11 +313,11 @@ select {
   }
 
   .glow-power {
-    text-shadow: 0 0 18px rgb(82 242 213 / 0.16);
+    text-shadow: 0 0 22px rgba(82, 242, 213, 0.16);
   }
 
   .glow-light-text {
-    text-shadow: 0 0 16px rgb(245 158 11 / 0.16);
+    text-shadow: 0 0 20px rgba(245, 158, 11, 0.16);
   }
 
   .live-indicator {
@@ -233,45 +341,45 @@ select {
   }
 
   .device-on-fan {
-    border-color: rgb(82 242 213 / 0.38);
-    background: rgb(82 242 213 / 0.12);
-    color: rgb(82 242 213);
-    box-shadow: 0 0 18px rgb(82 242 213 / 0.12), inset 0 0 12px rgb(82 242 213 / 0.08);
+    border-color: rgba(82, 242, 213, 0.38);
+    background: rgba(82, 242, 213, 0.12);
+    color: rgb(82, 242, 213);
+    box-shadow: 0 0 18px rgba(82, 242, 213, 0.12), inset 0 0 12px rgba(82, 242, 213, 0.08);
   }
 
   .device-on-light {
-    border-color: rgb(245 158 11 / 0.45);
-    background: rgb(245 158 11 / 0.12);
-    color: rgb(245 158 11);
-    box-shadow: 0 0 20px rgb(245 158 11 / 0.18), inset 0 0 12px rgb(245 158 11 / 0.1);
+    border-color: rgba(245, 158, 11, 0.45);
+    background: rgba(245, 158, 11, 0.12);
+    color: rgb(245, 158, 11);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.18), inset 0 0 12px rgba(245, 158, 11, 0.1);
   }
 
   .device-off {
-    border-color: rgb(255 255 255 / 0.06);
-    background: rgb(11 15 20 / 0.7);
-    color: rgb(138 148 164 / 0.8);
+    border-color: rgba(255, 255, 255, 0.06);
+    background: rgba(11, 15, 20, 0.7);
+    color: rgba(138, 148, 164, 0.8);
   }
 
   .alert-accent-medium {
-    border-left: 4px solid rgb(245 185 66 / 0.72);
+    border-left: 4px solid rgba(245, 185, 66, 0.72);
   }
 
   .alert-accent-high {
-    border-left: 4px solid rgb(239 68 68 / 0.88);
+    border-left: 4px solid rgba(239, 68, 68, 0.88);
   }
 
   .severity-badge-medium {
-    border: 1px solid rgb(245 185 66 / 0.28);
-    background: rgb(245 185 66 / 0.08);
-    color: rgb(245 185 66);
+    border: 1px solid rgba(245, 185, 66, 0.28);
+    background: rgba(245, 185, 66, 0.08);
+    color: rgb(245, 185, 66);
     border-radius: 0.5rem;
     padding: 0.25rem 0.5rem;
   }
 
   .severity-badge-high {
-    border: 1px solid rgb(239 68 68 / 0.35);
-    background: rgb(239 68 68 / 0.08);
-    color: rgb(239 68 68);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    background: rgba(239, 68, 68, 0.08);
+    color: rgb(239, 68, 68);
     border-radius: 0.5rem;
     padding: 0.25rem 0.5rem;
   }
@@ -282,8 +390,8 @@ select {
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 1rem;
     background:
-      radial-gradient(ellipse 80% 60% at 50% 100%, rgb(245 158 11 / 0.08), transparent),
-      linear-gradient(180deg, rgb(24 28 37 / 0.96) 0%, rgb(12 15 20 / 0.96) 100%);
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(245, 158, 11, 0.08), transparent),
+      linear-gradient(180deg, rgba(24, 28, 37, 0.96) 0%, rgba(12, 15, 20, 0.96) 100%);
     box-shadow:
       inset 0 1px 0 rgba(255, 255, 255, 0.05),
       0 20px 48px rgba(0, 0, 0, 0.36);
@@ -291,8 +399,8 @@ select {
 
   .room-floor-grid {
     background-image:
-      linear-gradient(rgb(139 149 165 / 0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgb(139 149 165 / 0.06) 1px, transparent 1px);
+      linear-gradient(rgba(139, 149, 165, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(139, 149, 165, 0.06) 1px, transparent 1px);
     background-size: 28px 28px;
   }
 
@@ -302,8 +410,8 @@ select {
     border-radius: 9999px;
     background: radial-gradient(
       circle,
-      rgb(245 185 66 / 0.35) 0%,
-      rgb(245 185 66 / 0.12) 40%,
+      rgba(245, 185, 66, 0.35) 0%,
+      rgba(245, 185, 66, 0.12) 40%,
       transparent 70%
     );
     pointer-events: none;
@@ -344,5 +452,37 @@ select {
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes shimmer-slide {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
