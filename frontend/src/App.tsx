@@ -5,15 +5,18 @@ import { ConnectionStatus } from "./components/ConnectionStatus";
 import { DeviceStatusPanel } from "./components/DeviceStatusPanel";
 import { OfficeLayout } from "./components/OfficeLayout";
 import { PowerMeter } from "./components/PowerMeter";
+import { getSummary } from "./services/api";
 import { useDeviceStream } from "./hooks/useDeviceStream";
 import { Sidebar } from "./components/Sidebar";
 import { TopHeader } from "./components/TopHeader";
+import type { WasteSummary } from "./types/device";
 
 function App() {
   const stream = useDeviceStream();
   const appLoadedAtRef = useRef(Date.now());
   const [snapshotArrivedAt, setSnapshotArrivedAt] = useState<number | null>(null);
   const [isErrorDismissed, setIsErrorDismissed] = useState(false);
+  const [wasteSummary, setWasteSummary] = useState<WasteSummary | null>(null);
 
   const snapshotSignature = useMemo(
     () =>
@@ -34,6 +37,25 @@ function App() {
       setSnapshotArrivedAt(Date.now());
     }
   }, [snapshotSignature, stream.alerts.length, stream.devices.length, stream.usage]);
+
+  useEffect(() => {
+    let isCancelled = false;
+
+    async function refreshSummary() {
+      const result = await getSummary();
+      if (!isCancelled && result.ok) {
+        setWasteSummary(result.data);
+      }
+    }
+
+    void refreshSummary();
+    const intervalId = window.setInterval(refreshSummary, 30_000);
+
+    return () => {
+      isCancelled = true;
+      window.clearInterval(intervalId);
+    };
+  }, [snapshotSignature]);
 
   const showFailureBanner =
     stream.connectionState === "polling" &&
@@ -150,6 +172,7 @@ function App() {
         <div className="grid min-w-0 gap-6 sm:gap-8 lg:grid-cols-[minmax(280px,0.9fr)_minmax(0,1.3fr)_minmax(280px,0.8fr)]">
           <PowerMeter
             usage={stream.usage}
+            wasteSummary={wasteSummary}
             appLoadedAt={appLoadedAtRef.current}
             isLoading={isLoadingSnapshot}
           />

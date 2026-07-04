@@ -101,6 +101,11 @@ async def get_alerts() -> list[dict]:
 	return store.get_alerts()
 
 
+@app.get("/api/summary")
+async def get_summary() -> dict:
+	return store.get_waste_summary()
+
+
 @app.get("/health")
 async def health() -> dict:
 	return {"status": "ok"}
