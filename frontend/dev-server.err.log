@@ -1,0 +1,172 @@
+[2m15:16:21[22m [31m[1m[vite][22m[39m Pre-transform error: Failed to resolve import "@fontsource/inter/400.css" from "src/main.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/FUAD/source/repos/LumaWarden/frontend/src/main.tsx[39m:1:7
+[33m  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import "@fontsource/inter/400.css";
+     |          ^
+  3  |  import "@fontsource/inter/500.css";
+  4  |  import "@fontsource/inter/600.css";[39m
+[2m15:17:49[22m [31m[1m[vite][22m[39m Pre-transform error: Failed to resolve import "@fontsource/inter/400.css" from "src/main.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/FUAD/source/repos/LumaWarden/frontend/src/main.tsx[39m:1:7
+[33m  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import "@fontsource/inter/400.css";
+     |          ^
+  3  |  import "@fontsource/inter/500.css";
+  4  |  import "@fontsource/inter/600.css";[39m
+[2m15:17:49[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "@fontsource/inter/400.css" from "src/main.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/FUAD/source/repos/LumaWarden/frontend/src/main.tsx[39m:1:7
+[33m  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import "@fontsource/inter/400.css";
+     |          ^
+  3  |  import "@fontsource/inter/500.css";
+  4  |  import "@fontsource/inter/600.css";[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 1)
+      at async TransformPluginContext.transform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+      at async viteTransformMiddleware (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:37369:24)
+[2m15:18:27[22m [31m[1m[vite][22m[39m Pre-transform error: Failed to resolve import "@fontsource/inter/400.css" from "src/main.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/FUAD/source/repos/LumaWarden/frontend/src/main.tsx[39m:1:7
+[33m  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import "@fontsource/inter/400.css";
+     |          ^
+  3  |  import "@fontsource/inter/500.css";
+  4  |  import "@fontsource/inter/600.css";[39m
+[2m15:18:27[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "@fontsource/inter/400.css" from "src/main.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/FUAD/source/repos/LumaWarden/frontend/src/main.tsx[39m:1:7
+[33m  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import "@fontsource/inter/400.css";
+     |          ^
+  3  |  import "@fontsource/inter/500.css";
+  4  |  import "@fontsource/inter/600.css";[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 1)
+      at async TransformPluginContext.transform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+      at async viteTransformMiddleware (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:37369:24)
+[2m15:22:33[22m [31m[1m[vite][22m[39m Pre-transform error: Failed to resolve import "@fontsource/inter/400.css" from "src/main.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/FUAD/source/repos/LumaWarden/frontend/src/main.tsx[39m:1:7
+[33m  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import "@fontsource/inter/400.css";
+     |          ^
+  3  |  import "@fontsource/inter/500.css";
+  4  |  import "@fontsource/inter/600.css";[39m
+[2m15:22:33[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "@fontsource/inter/400.css" from "src/main.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/FUAD/source/repos/LumaWarden/frontend/src/main.tsx[39m:1:7
+[33m  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import "@fontsource/inter/400.css";
+     |          ^
+  3  |  import "@fontsource/inter/500.css";
+  4  |  import "@fontsource/inter/600.css";[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 1)
+      at async TransformPluginContext.transform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+      at async viteTransformMiddleware (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:37369:24)
+[2m15:22:46[22m [31m[1m[vite][22m[39m Pre-transform error: Failed to resolve import "@fontsource/inter/400.css" from "src/main.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/FUAD/source/repos/LumaWarden/frontend/src/main.tsx[39m:1:7
+[33m  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import "@fontsource/inter/400.css";
+     |          ^
+  3  |  import "@fontsource/inter/500.css";
+  4  |  import "@fontsource/inter/600.css";[39m
+[2m15:22:46[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "@fontsource/inter/400.css" from "src/main.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/FUAD/source/repos/LumaWarden/frontend/src/main.tsx[39m:1:7
+[33m  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import "@fontsource/inter/400.css";
+     |          ^
+  3  |  import "@fontsource/inter/500.css";
+  4  |  import "@fontsource/inter/600.css";[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 1)
+      at async TransformPluginContext.transform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+      at async viteTransformMiddleware (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:37369:24)
+[2m15:22:48[22m [31m[1m[vite][22m[39m Pre-transform error: Failed to resolve import "@fontsource/inter/400.css" from "src/main.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/FUAD/source/repos/LumaWarden/frontend/src/main.tsx[39m:1:7
+[33m  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import "@fontsource/inter/400.css";
+     |          ^
+  3  |  import "@fontsource/inter/500.css";
+  4  |  import "@fontsource/inter/600.css";[39m
+[2m15:22:48[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "@fontsource/inter/400.css" from "src/main.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/FUAD/source/repos/LumaWarden/frontend/src/main.tsx[39m:1:7
+[33m  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import "@fontsource/inter/400.css";
+     |          ^
+  3  |  import "@fontsource/inter/500.css";
+  4  |  import "@fontsource/inter/600.css";[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 1)
+      at async TransformPluginContext.transform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+      at async viteTransformMiddleware (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:37369:24)
+[2m15:23:09[22m [31m[1m[vite][22m[39m Pre-transform error: Failed to resolve import "@fontsource/inter/400.css" from "src/main.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/FUAD/source/repos/LumaWarden/frontend/src/main.tsx[39m:1:7
+[33m  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import "@fontsource/inter/400.css";
+     |          ^
+  3  |  import "@fontsource/inter/500.css";
+  4  |  import "@fontsource/inter/600.css";[39m
+[2m15:23:09[22m [31m[1m[vite][22m[39m [31mInternal server error: Failed to resolve import "@fontsource/inter/400.css" from "src/main.tsx". Does the file exist?[39m
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/FUAD/source/repos/LumaWarden/frontend/src/main.tsx[39m:1:7
+[33m  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import "@fontsource/inter/400.css";
+     |          ^
+  3  |  import "@fontsource/inter/500.css";
+  4  |  import "@fontsource/inter/600.css";[39m
+      at TransformPluginContext._formatLog (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42658:41)
+      at TransformPluginContext.error (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42655:16)
+      at normalizeUrl (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40634:23)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40753:37
+      at async Promise.all (index 1)
+      at async TransformPluginContext.transform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:40680:7)
+      at async EnvironmentPluginContainer.transform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:42453:18)
+      at async loadAndTransform (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:35845:27)
+      at async viteTransformMiddleware (file:///C:/Users/FUAD/source/repos/LumaWarden/frontend/node_modules/vite/dist/node/chunks/dep-Dm0c1Wj2.js:37369:24)
+[2m15:23:30[22m [31m[1m[vite][22m[39m Pre-transform error: Failed to resolve import "@fontsource/inter/400.css" from "src/main.tsx". Does the file exist?
+  Plugin: [35mvite:import-analysis[39m
+  File: [36mC:/Users/FUAD/source/repos/LumaWarden/frontend/src/main.tsx[39m:1:7
+[33m  1  |  import { jsxDEV } from "react/jsx-dev-runtime";
+  2  |  import "@fontsource/inter/400.css";
+     |          ^
+  3  |  import "@fontsource/inter/500.css";
+  4  |  import "@fontsource/inter/600.css";[39m
