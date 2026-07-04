@@ -13,7 +13,6 @@ import type { Usage, WasteSummary } from "../types/device";
 type PowerMeterProps = {
   usage: Usage | null;
   wasteSummary: WasteSummary | null;
-  appLoadedAt: number;
   isLoading: boolean;
 };
 
@@ -58,21 +57,19 @@ function PowerTooltip({
   );
 }
 
-export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: PowerMeterProps) {
+export function PowerMeter({ usage, wasteSummary, isLoading }: PowerMeterProps) {
   const totalWatts = usage?.total_watts ?? 0;
-  const [nowMs, setNowMs] = useState(Date.now());
   const [viewportWidth, setViewportWidth] = useState(() => window.innerWidth);
   const previousDayWasteKwh = wasteSummary?.previous_day.kwh ?? 0;
+  const todayWasteKwh = wasteSummary?.today.kwh ?? 0;
 
   useEffect(() => {
-    const timerId = window.setInterval(() => setNowMs(Date.now()), 60_000);
     const resizeHandler = () => setViewportWidth(window.innerWidth);
 
     resizeHandler();
     window.addEventListener("resize", resizeHandler);
 
     return () => {
-      window.clearInterval(timerId);
       window.removeEventListener("resize", resizeHandler);
     };
   }, []);
@@ -85,11 +82,6 @@ export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: Powe
       })),
     [usage],
   );
-
-  const estimatedKwh = useMemo(() => {
-    const hoursSinceLoaded = (nowMs - appLoadedAt) / 3_600_000;
-    return (totalWatts / 1000) * hoursSinceLoaded;
-  }, [appLoadedAt, nowMs, totalWatts]);
 
   const formatRoomLabel = (room: string): string => {
     if (viewportWidth < 640 && room in compactRoomLabels) {
@@ -177,7 +169,7 @@ export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: Powe
               {previousDayWasteKwh.toFixed(4)} kWh yesterday
             </p>
             <p className="text-xs text-text-secondary">
-              {estimatedKwh.toFixed(4)} kWh estimated since dashboard opened
+              {todayWasteKwh.toFixed(4)} kWh after-hours today
             </p>
           </div>
         )}

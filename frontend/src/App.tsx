@@ -1,5 +1,5 @@
 import { Activity, AlertTriangle, Wifi, X, Zap } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AlertsPanel } from "./components/AlertsPanel";
 import { ConnectionStatus } from "./components/ConnectionStatus";
 import { DeviceStatusPanel } from "./components/DeviceStatusPanel";
@@ -12,7 +12,6 @@ import type { WasteSummary } from "./types/device";
 
 function App() {
   const stream = useDeviceStream();
-  const appLoadedAtRef = useRef(Date.now());
   const [snapshotArrivedAt, setSnapshotArrivedAt] = useState<number | null>(null);
   const [isErrorDismissed, setIsErrorDismissed] = useState(false);
   const [wasteSummary, setWasteSummary] = useState<WasteSummary | null>(null);
@@ -100,7 +99,7 @@ function App() {
           devices={stream.devices}
           usage={stream.usage}
           alerts={stream.alerts}
-          appLoadedAt={appLoadedAtRef.current}
+          wasteSummary={wasteSummary}
         />
         {showFailureBanner ? (
           <div
@@ -153,7 +152,6 @@ function App() {
         <PowerMeter
           usage={stream.usage}
           wasteSummary={wasteSummary}
-          appLoadedAt={appLoadedAtRef.current}
           isLoading={isLoadingSnapshot}
         />
         <DeviceStatusPanel devices={stream.devices} />

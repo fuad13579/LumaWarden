@@ -1,18 +1,18 @@
 import { Zap, Activity, Sparkles, AlertTriangle } from "lucide-react";
-import type { Alert, ConnectionState, Usage, Device } from "../types/device";
+import type { Alert, ConnectionState, Usage, Device, WasteSummary } from "../types/device";
 
 type TopHeaderProps = {
   connectionState: ConnectionState;
   devices: Device[];
   usage: Usage | null;
   alerts: Alert[];
-  appLoadedAt: number;
+  wasteSummary: WasteSummary | null;
 };
 
-export function TopHeader({ connectionState, devices, usage, alerts, appLoadedAt }: TopHeaderProps) {
+export function TopHeader({ connectionState, devices, usage, alerts, wasteSummary }: TopHeaderProps) {
   const activeDevices = devices.filter((d) => d.status === "on").length;
   const totalWatts = usage?.total_watts ?? 0;
-  const estimatedKwh = ((totalWatts / 1000) * (Math.max(Date.now() - appLoadedAt, 0) / 3_600_000)).toFixed(2);
+  const todayWasteKwh = wasteSummary?.today.kwh ?? 0;
 
   const kpiCards = [
     {
@@ -28,8 +28,8 @@ export function TopHeader({ connectionState, devices, usage, alerts, appLoadedAt
       accent: "text-accent-power",
     },
     {
-      label: "Today's kWh",
-      value: `${estimatedKwh}`,
+      label: "Today Waste",
+      value: `${todayWasteKwh.toFixed(4)} kWh`,
       icon: Sparkles,
       accent: "text-text-primary",
     },
