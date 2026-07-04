@@ -45,27 +45,29 @@ export function ConnectionStatus({
   }, [devices, snapshotArrivedAt]);
 
   return (
-    <header className="flex flex-col gap-3 border-b border-slate-800 pb-5 sm:flex-row sm:items-end sm:justify-between">
+    <header className="glass-card flex flex-col gap-3 p-5 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <h1 className="text-2xl font-semibold tracking-normal text-slate-50">
           LumaWarden
         </h1>
-        <p className="mt-1 text-sm text-slate-400">
+        <p
+          className={`mt-1 text-sm text-slate-400 ${
+            lastUpdatedAt === null ? "animate-pulse" : ""
+          }`}
+        >
           Last updated {formatTimestamp(lastUpdatedAt)}
         </p>
       </div>
 
       <div
-        className="inline-flex w-fit items-center gap-2 rounded-md border border-slate-800 bg-slate-900 px-3 py-2 text-sm"
+        className="inline-flex w-fit items-center gap-2 rounded-md border border-slate-700/70 bg-slate-950/55 px-3 py-2 text-sm backdrop-blur"
         aria-label={`Connection status: ${connectionState}`}
       >
         <span
           className={`h-2.5 w-2.5 rounded-full ${stateStyles[connectionState]}`}
           aria-hidden="true"
         />
-        <span className={stateStyles[connectionState]}>
-          {connectionState}
-        </span>
+        <span className={stateStyles[connectionState]}>{connectionState}</span>
       </div>
     </header>
   );

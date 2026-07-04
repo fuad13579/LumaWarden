@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { AlertsPanel } from "./components/AlertsPanel";
 import { ConnectionStatus } from "./components/ConnectionStatus";
 import { DeviceStatusPanel } from "./components/DeviceStatusPanel";
+import { OfficeLayout } from "./components/OfficeLayout";
 import { PowerMeter } from "./components/PowerMeter";
 import { useDeviceStream } from "./hooks/useDeviceStream";
 
@@ -36,11 +37,12 @@ function App() {
     stream.connectionState === "polling" &&
     stream.error !== null &&
     !isErrorDismissed;
+  const isLoadingSnapshot = stream.devices.length === 0 && stream.usage === null;
 
   return (
-    <main className="min-h-screen bg-slate-950 text-slate-100">
+    <main className="min-h-screen overflow-x-hidden bg-slate-950 text-slate-100">
       <section
-        className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-6 py-8"
+        className="mx-auto flex min-h-screen w-full max-w-7xl flex-col gap-6 px-4 py-5 sm:px-6 lg:py-8"
         aria-label="LumaWarden dashboard"
       >
         {showFailureBanner ? (
@@ -49,7 +51,7 @@ function App() {
             role="status"
           >
             <p className="text-sm font-medium">
-              Having trouble reaching the server — retrying...
+              Having trouble reaching the server - retrying...
             </p>
             <button
               type="button"
@@ -68,12 +70,16 @@ function App() {
           snapshotArrivedAt={snapshotArrivedAt}
         />
 
-        <div className="grid gap-6 xl:grid-cols-[minmax(0,1.4fr)_minmax(320px,0.6fr)]">
-          <div className="space-y-6">
-            <PowerMeter usage={stream.usage} appLoadedAt={appLoadedAtRef.current} />
-            <DeviceStatusPanel devices={stream.devices} />
-          </div>
-          <AlertsPanel alerts={stream.alerts} />
+        <OfficeLayout devices={stream.devices} />
+
+        <div className="grid min-w-0 gap-6 lg:grid-cols-[minmax(280px,0.85fr)_minmax(0,1.35fr)_minmax(280px,0.8fr)]">
+          <PowerMeter
+            usage={stream.usage}
+            appLoadedAt={appLoadedAtRef.current}
+            isLoading={isLoadingSnapshot}
+          />
+          <DeviceStatusPanel devices={stream.devices} />
+          <AlertsPanel alerts={stream.alerts} isLoading={isLoadingSnapshot} />
         </div>
       </section>
     </main>
