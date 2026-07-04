@@ -18,6 +18,39 @@ type PowerMeterProps = {
 
 const roomNames = ["Drawing Room", "Work Room 1", "Work Room 2"] as const;
 
+type ChartRow = {
+  room: string;
+  watts: number;
+};
+
+type TooltipPayload = {
+  value: number;
+  payload: ChartRow;
+};
+
+function PowerTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: TooltipPayload[];
+}) {
+  if (!active || !payload?.length) {
+    return null;
+  }
+
+  const entry = payload[0];
+
+  return (
+    <div className="rounded-xl border border-white/10 bg-bg-card/95 px-4 py-3 shadow-[0_10px_34px_rgba(0,0,0,0.46)] backdrop-blur-sm">
+      <p className="text-xs text-text-secondary">{entry.payload.room}</p>
+      <p className="font-data mt-1 text-lg font-semibold text-accent-power">
+        {entry.value.toLocaleString()} W
+      </p>
+    </div>
+  );
+}
+
 export function PowerMeter({ usage, appLoadedAt, isLoading }: PowerMeterProps) {
   const totalWatts = usage?.total_watts ?? 0;
   const [nowMs, setNowMs] = useState(Date.now());
@@ -43,59 +76,94 @@ export function PowerMeter({ usage, appLoadedAt, isLoading }: PowerMeterProps) {
   }, [appLoadedAt, nowMs, totalWatts]);
 
   return (
-    <section aria-label="Power meter" className="glass-card p-5">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+    <section aria-label="Power meter" className="glass-card p-6 sm:p-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className="text-base font-semibold text-slate-100">Power</h2>
-          <p className="mt-1 text-sm text-slate-400">Live whole-office draw</p>
+          <p className="panel-label">Energy Monitor</p>
+          <h2 className="panel-title mt-1">Power</h2>
+          <p className="mt-1.5 text-sm text-text-secondary">Live whole-office draw</p>
         </div>
         {isLoading ? (
-          <div className="h-11 w-32 animate-pulse rounded bg-slate-800/70" />
+          <div className="h-16 w-40 animate-pulse rounded-xl bg-bg-surface" />
         ) : (
-          <div className="font-mono text-4xl font-semibold text-cyan-200">
-            {totalWatts.toLocaleString()}W
+          <div className="text-right">
+            <p className="font-data glow-power text-5xl font-bold leading-none tracking-tight text-accent-power sm:text-6xl">
+              {totalWatts.toLocaleString()}
+            </p>
+            <p className="font-data mt-1.5 text-sm font-medium text-text-secondary">
+              watts
+            </p>
           </div>
         )}
       </div>
 
-      <div className="mt-5 h-56">
+      <div className="mt-6 h-52">
         {isLoading ? (
-          <div className="flex h-full items-end gap-4 rounded-md border border-slate-700/50 bg-slate-950/45 px-5 py-4">
+          <div className="surface-nested flex h-full items-end gap-4 px-5 py-5">
             {[44, 68, 52].map((height) => (
               <div
                 key={height}
-                className="flex-1 animate-pulse rounded-t bg-slate-800/75"
+                className="flex-1 animate-pulse rounded-t-lg bg-bg-surface"
                 style={{ height: `${height}%` }}
               />
             ))}
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ left: -18, right: 8 }}>
-              <CartesianGrid stroke="#1e293b" vertical={false} />
-              <XAxis dataKey="room" stroke="#94a3b8" tick={{ fontSize: 12 }} />
-              <YAxis stroke="#94a3b8" tick={{ fontSize: 12 }} />
-              <Tooltip
-                cursor={{ fill: "#0f172a" }}
-                contentStyle={{
-                  background: "#020617",
-                  border: "1px solid #334155",
-                  borderRadius: 6,
-                  color: "#e2e8f0",
-                }}
+            <BarChart data={chartData} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
+              <CartesianGrid
+                stroke="rgb(255 255 255 / 0.05)"
+                strokeDasharray="4 4"
+                vertical={false}
               />
-              <Bar dataKey="watts" fill="#22d3ee" radius={[4, 4, 0, 0]} />
+              <XAxis
+                dataKey="room"
+                axisLine={false}
+                tickLine={false}
+                tick={{ fill: "#8B95A5", fontSize: 11, fontFamily: "Inter, sans-serif" }}
+                dy={8}
+              />
+              <YAxis
+                axisLine={false}
+                tickLine={false}
+                tick={{
+                  fill: "#8B95A5",
+                  fontSize: 11,
+                  fontFamily: "JetBrains Mono, monospace",
+                }}
+                width={42}
+              />
+              <defs>
+                <linearGradient id="powerBarGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#f59e0b" stopOpacity={1} />
+                  <stop offset="55%" stopColor="#f59e0b" stopOpacity={0.88} />
+                  <stop offset="100%" stopColor="#52f2d5" stopOpacity={0.35} />
+                </linearGradient>
+                <filter id="barShadow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feDropShadow dx="0" dy="6" stdDeviation="10" floodColor="#000" floodOpacity="0.35" />
+                </filter>
+              </defs>
+              <Tooltip
+                content={<PowerTooltip />}
+                cursor={{ fill: "rgb(245 158 11 / 0.08)" }}
+              />
+              <Bar
+                dataKey="watts"
+                fill="url(#powerBarGradient)"
+                radius={[10, 10, 4, 4]}
+                maxBarSize={62}
+              />
             </BarChart>
           </ResponsiveContainer>
         )}
       </div>
 
-      <div className="mt-4 rounded-md border border-amber-400/30 bg-amber-400/10 px-4 py-3">
-        <p className="text-xs font-semibold uppercase text-amber-200">estimate</p>
+      <div className="mt-5 alert-card border-accent-light/20 bg-accent-light/6 px-5 py-4">
+        <p className="panel-label text-accent-light/80">Estimate</p>
         {isLoading ? (
-          <div className="mt-2 h-7 w-48 animate-pulse rounded bg-amber-200/15" />
+          <div className="mt-2.5 h-8 w-52 animate-pulse rounded-lg bg-accent-light/10" />
         ) : (
-          <p className="mt-1 font-mono text-xl text-amber-100">
+          <p className="font-data glow-light-text mt-1.5 text-xl font-semibold text-accent-light">
             {estimatedKwh.toFixed(4)} kWh used today
           </p>
         )}

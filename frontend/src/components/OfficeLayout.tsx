@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Fan, Lightbulb } from "lucide-react";
 import { useMemo } from "react";
 import type { Device } from "../types/device";
@@ -36,49 +36,58 @@ function getDeviceId(prefix: string, type: DeviceKind, index: number): string {
 }
 
 function RoomFurniture({ room }: { room: RoomName }) {
-  if (room === "Drawing Room") {
-    return (
-      <>
-        <div className="absolute bottom-[20%] left-[13%] h-[22%] w-[36%] rounded-md border border-slate-600/40 bg-slate-800/65" />
-        <div className="absolute bottom-[28%] left-[55%] h-[13%] w-[28%] rounded-md border border-slate-600/40 bg-slate-700/55" />
-        <div className="absolute bottom-[16%] left-[55%] h-[7%] w-[28%] rounded-full bg-slate-700/50" />
-      </>
-    );
-  }
+  const isDrawing = room === "Drawing Room";
 
   return (
     <>
-      <div className="absolute bottom-[18%] left-[14%] h-[20%] w-[32%] rounded-md border border-slate-600/40 bg-slate-800/65" />
-      <div className="absolute bottom-[18%] right-[14%] h-[20%] w-[32%] rounded-md border border-slate-600/40 bg-slate-800/65" />
-      <div className="absolute bottom-[40%] left-[21%] h-[7%] w-[18%] rounded-sm bg-slate-700/60" />
-      <div className="absolute bottom-[40%] right-[21%] h-[7%] w-[18%] rounded-sm bg-slate-700/60" />
+      <div className="absolute left-[8%] top-[22%] h-[24%] w-[32%] rounded-[1rem] border border-white/10 bg-[#202633] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" />
+      <div className="absolute right-[8%] top-[22%] h-[24%] w-[32%] rounded-[1rem] border border-white/10 bg-[#202633] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" />
+      <div className="absolute bottom-[11%] left-[14%] h-[20%] w-[32%] rounded-[1rem] border border-white/10 bg-[#232a35] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" />
+      <div className="absolute bottom-[11%] right-[14%] h-[20%] w-[32%] rounded-[1rem] border border-white/10 bg-[#232a35] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" />
+      <div className="absolute bottom-[18%] left-[49%] h-[14%] w-[12%] -translate-x-1/2 rounded-[0.75rem] border border-white/10 bg-[#1c212a] shadow-[0_8px_18px_rgba(0,0,0,0.24)]" />
+      <div className="absolute bottom-[31%] left-[20%] h-[5%] w-[15%] rounded-full border border-white/5 bg-[#1b2028]" />
+      <div className="absolute bottom-[31%] right-[20%] h-[5%] w-[15%] rounded-full border border-white/5 bg-[#1b2028]" />
+      {isDrawing ? (
+        <>
+          <div className="absolute bottom-[38%] left-[22%] h-[9%] w-[18%] rounded-[0.8rem] border border-white/10 bg-[#1e2430]" />
+          <div className="absolute bottom-[38%] right-[22%] h-[9%] w-[18%] rounded-[0.8rem] border border-white/10 bg-[#1e2430]" />
+        </>
+      ) : null}
+      <div className="absolute bottom-[8%] left-[44%] h-[5%] w-[12%] -translate-x-1/2 rounded-full border border-white/8 bg-[#151922]" />
     </>
   );
 }
 
 function DeviceMarker({ device, marker }: { device: Device | null; marker: Marker }) {
+  const prefersReducedMotion = useReducedMotion();
   const isOn = device?.status === "on";
   const isFan = marker.type === "fan";
   const Icon = isFan ? Fan : Lightbulb;
-  const onClasses = isFan
-    ? "border-cyan-300/70 bg-cyan-300/15 text-cyan-200 shadow-[0_0_24px_rgba(34,211,238,0.34)]"
-    : "border-amber-300/70 bg-amber-300/20 text-amber-100 shadow-[0_0_28px_rgba(251,191,36,0.42)]";
-  const offClasses = "border-slate-700/80 bg-slate-950/70 text-slate-600";
 
   return (
     <motion.div
-      className={`absolute grid h-10 w-10 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full border backdrop-blur ${
-        isOn ? onClasses : offClasses
-      }`}
+      className="absolute -translate-x-1/2 -translate-y-1/2 transition-transform duration-200"
       style={{ top: marker.top, left: marker.left }}
-      animate={{ scale: isOn ? 1.06 : 1, opacity: isOn ? 1 : 0.72 }}
-      transition={{ duration: 0.25 }}
+      animate={{ scale: isOn ? 1.05 : 1, opacity: isOn ? 1 : 0.65 }}
+      transition={{ duration: prefersReducedMotion ? 0 : 0.35, ease: "easeOut" }}
       aria-label={`${device?.name ?? marker.type} ${device?.status ?? "off"}`}
     >
-      <Icon
-        className={`h-5 w-5 ${isFan && isOn ? "motion-safe:animate-spin" : ""}`}
-        aria-hidden="true"
-      />
+      {isOn && !isFan ? <span className="light-bloom" aria-hidden="true" /> : null}
+
+      <div
+        className={`relative grid h-11 w-11 place-items-center rounded-full border backdrop-blur-sm transition-all duration-200 ${
+          isOn
+            ? isFan
+              ? "device-on-fan"
+              : "device-on-light"
+            : "device-off"
+        }`}
+      >
+        <Icon
+          className={`h-5 w-5 ${isFan && isOn && !prefersReducedMotion ? "fan-spin" : ""}`}
+          aria-hidden="true"
+        />
+      </div>
     </motion.div>
   );
 }
@@ -90,40 +99,54 @@ export function OfficeLayout({ devices }: OfficeLayoutProps) {
   );
 
   return (
-    <section className="glass-card p-4 sm:p-5" aria-label="Office floor plan">
-      <div className="mb-4 flex items-end justify-between gap-3">
+    <section className="glass-card p-6 sm:p-7" aria-label="Office floor plan">
+      <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h2 className="text-base font-semibold text-slate-100">Office Layout</h2>
-          <p className="mt-1 text-sm text-slate-400">
-            Live visual state of fans and lights
+          <p className="panel-label">Floor Visualization</p>
+          <h2 className="panel-title mt-1">Office Layout</h2>
+          <p className="mt-1.5 text-sm text-text-secondary">
+            Top-view visual state of lights and fans across the floor
           </p>
         </div>
-        <div className="hidden gap-3 text-xs sm:flex">
-          <span className="inline-flex items-center gap-1 text-amber-200">
+        <div className="flex flex-wrap gap-4 text-xs">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/6 bg-bg-surface/50 px-3 py-1.5 text-accent-light badge-premium">
             <Lightbulb className="h-3.5 w-3.5" aria-hidden="true" />
             lights
           </span>
-          <span className="inline-flex items-center gap-1 text-cyan-200">
+          <span className="inline-flex items-center gap-2 rounded-full border border-white/6 bg-bg-surface/50 px-3 py-1.5 text-accent-power badge-premium">
             <Fan className="h-3.5 w-3.5" aria-hidden="true" />
             fans
           </span>
         </div>
       </div>
 
-      <div className="grid min-w-0 gap-3 lg:grid-cols-3" role="img">
+      <div className="grid min-w-0 gap-6 sm:gap-6 lg:grid-cols-3" role="img">
         {rooms.map((room) => (
           <div
             key={room.name}
-            className="relative min-h-72 overflow-hidden rounded-md border border-slate-700/60 bg-slate-950/55"
+            className="room-floor min-h-[19rem]"
             aria-label={`${room.name} visual status`}
           >
-            <div className="absolute inset-x-0 top-0 border-b border-slate-700/70 bg-slate-900/70 px-3 py-2">
-              <h3 className="truncate text-sm font-semibold text-slate-200">
+            <div className="absolute inset-x-0 top-0 z-10 border-b border-white/6 bg-bg-card/85 px-5 py-3 backdrop-blur-sm">
+              <h3 className="truncate text-center text-sm font-semibold tracking-tight text-text-primary">
                 {room.name}
               </h3>
             </div>
-            <div className="absolute inset-0 bg-[linear-gradient(rgba(148,163,184,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(148,163,184,0.08)_1px,transparent_1px)] bg-[size:24px_24px]" />
+
+            <div className="room-floor-grid absolute inset-0 opacity-80" aria-hidden="true" />
+            <div className="absolute inset-[7%] rounded-[1.25rem] border-[8px] border-[#2f3742] shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]" aria-hidden="true" />
+            <div className="absolute inset-x-[14%] top-[15%] h-[10%] rounded-[0.75rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
+            <div className="absolute left-[10%] top-[24%] h-[10%] w-[10%] rounded-[0.6rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
+            <div className="absolute right-[10%] top-[24%] h-[10%] w-[10%] rounded-[0.6rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
+            <div className="absolute bottom-[9%] left-[14%] h-[7%] w-[10%] rounded-[0.6rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
+            <div className="absolute bottom-[9%] right-[14%] h-[7%] w-[10%] rounded-[0.6rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
+            <div
+              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_80%,rgb(245_158_11/0.08),transparent)]"
+              aria-hidden="true"
+            />
+
             <RoomFurniture room={room.name} />
+
             {markers.map((marker) => (
               <DeviceMarker
                 key={`${room.name}-${marker.type}-${marker.index}`}
