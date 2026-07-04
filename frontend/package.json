@@ -10,6 +10,8 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/jetbrains-mono": "^5.2.8",
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.468.0",
     "react": "19.2.4",
@@ -18,10 +20,10 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.17",
-    "@vitejs/plugin-react": "^4.3.4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9",
     "tailwindcss": "^4",
     "typescript": "^5",

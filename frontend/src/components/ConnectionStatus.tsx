@@ -7,10 +7,25 @@ type ConnectionStatusProps = {
   snapshotArrivedAt: number | null;
 };
 
-const stateStyles: Record<ConnectionState, string> = {
-  connected: "bg-emerald-400 text-emerald-200",
-  reconnecting: "bg-amber-400 text-amber-200",
-  polling: "bg-slate-400 text-slate-300",
+const stateConfig: Record<
+  ConnectionState,
+  { dot: string; label: string; badge: string }
+> = {
+  connected: {
+    dot: "bg-accent-power",
+    label: "text-accent-power",
+    badge: "border-accent-power/25 bg-accent-power/8",
+  },
+  reconnecting: {
+    dot: "bg-accent-light",
+    label: "text-accent-light",
+    badge: "border-accent-light/25 bg-accent-light/8",
+  },
+  polling: {
+    dot: "bg-text-secondary",
+    label: "text-text-secondary",
+    badge: "border-white/10 bg-bg-surface/60",
+  },
 };
 
 function formatTimestamp(timestamp: number | null): string {
@@ -44,30 +59,41 @@ export function ConnectionStatus({
     return latestDeviceChange ?? snapshotArrivedAt;
   }, [devices, snapshotArrivedAt]);
 
+  const config = stateConfig[connectionState];
+  const isLive = connectionState === "connected";
+
   return (
-    <header className="glass-card flex flex-col gap-3 p-5 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-normal text-slate-50">
-          LumaWarden
-        </h1>
+    <header className="glass-card flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+      <div className="min-w-0">
+        <p className="panel-label">Live telemetry</p>
         <p
-          className={`mt-1 text-sm text-slate-400 ${
+          className={`mt-2 text-sm text-text-secondary ${
             lastUpdatedAt === null ? "animate-pulse" : ""
           }`}
         >
-          Last updated {formatTimestamp(lastUpdatedAt)}
+          Last updated <span className="font-data text-text-primary/90">{formatTimestamp(lastUpdatedAt)}</span>
         </p>
       </div>
 
       <div
-        className="inline-flex w-fit items-center gap-2 rounded-md border border-slate-700/70 bg-slate-950/55 px-3 py-2 text-sm backdrop-blur"
+        className={`inline-flex w-fit items-center gap-3 rounded-full border px-4 py-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.2)] backdrop-blur-sm ${config.badge}`}
         aria-label={`Connection status: ${connectionState}`}
       >
-        <span
-          className={`h-2.5 w-2.5 rounded-full ${stateStyles[connectionState]}`}
-          aria-hidden="true"
-        />
-        <span className={stateStyles[connectionState]}>{connectionState}</span>
+        <span className="relative flex h-2.5 w-2.5 shrink-0">
+          <span
+            className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${config.dot} ${
+              isLive ? "live-indicator" : ""
+            }`}
+            aria-hidden="true"
+          />
+          <span
+            className={`relative inline-flex h-2.5 w-2.5 rounded-full ${config.dot}`}
+            aria-hidden="true"
+          />
+        </span>
+        <span className={`text-sm font-medium capitalize ${config.label}`}>
+          {connectionState}
+        </span>
       </div>
     </header>
   );

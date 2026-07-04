@@ -7,9 +7,20 @@ type AlertsPanelProps = {
   isLoading: boolean;
 };
 
-const severityStyles: Record<Alert["severity"], string> = {
-  medium: "border-amber-400/30 bg-amber-400/10 text-amber-100",
-  high: "border-red-400/40 bg-red-400/10 text-red-100",
+const severityConfig: Record<
+  Alert["severity"],
+  { accent: string; badge: string; surface: string }
+> = {
+  medium: {
+    accent: "alert-accent-medium",
+    badge: "severity-badge-medium",
+    surface: "border-accent-light/15 bg-accent-light/5",
+  },
+  high: {
+    accent: "alert-accent-high",
+    badge: "severity-badge-high",
+    surface: "border-danger/20 bg-danger/5",
+  },
 };
 
 function formatCreatedAt(createdAt: string): string {
@@ -36,41 +47,61 @@ export function AlertsPanel({ alerts, isLoading }: AlertsPanelProps) {
   );
 
   return (
-    <section aria-label="Alerts" className="glass-card p-5">
-      <h2 className="text-base font-semibold text-slate-100">Alerts</h2>
+    <section aria-label="Alerts" className="glass-card p-6 sm:p-6">
+      <div className="flex items-baseline justify-between gap-3">
+        <div>
+          <p className="panel-label">System Events</p>
+          <h2 className="panel-title mt-1">Alerts</h2>
+        </div>
+        {!isLoading && alerts.length > 0 ? (
+          <span className="font-data rounded-lg border border-white/10 bg-bg-surface px-3 py-1 text-sm font-semibold text-text-secondary">
+            {alerts.length} active
+          </span>
+        ) : null}
+      </div>
 
       {isLoading ? (
-        <div className="mt-4 space-y-3">
+        <div className="mt-5 space-y-3">
           {[0, 1, 2].map((item) => (
             <div
               key={item}
-              className="h-16 animate-pulse rounded-md border border-slate-700/50 bg-slate-800/45"
+              className="h-[4.5rem] animate-pulse rounded-lg border border-white/5 bg-bg-surface/60"
             />
           ))}
         </div>
       ) : alerts.length === 0 ? (
-        <div className="mt-5 flex items-center gap-3 rounded-md border border-emerald-400/30 bg-emerald-400/10 px-4 py-5 text-emerald-100">
-          <CheckCircle className="h-5 w-5 shrink-0" aria-hidden="true" />
-          <p className="text-sm font-medium">No active alerts - all clear</p>
+        <div className="mt-5 flex items-center gap-3.5 alert-card">
+          <CheckCircle className="h-5 w-5 shrink-0 text-accent-power" aria-hidden="true" />
+          <p className="text-sm font-medium text-text-primary">No active alerts — all clear</p>
         </div>
       ) : (
-        <div className="mt-4 space-y-3">
-          {sortedAlerts.map((alert) => (
-            <article
-              key={alert.id}
-              className={`rounded-md border px-4 py-3 ${severityStyles[alert.severity]}`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <p className="text-sm font-medium">{alert.message}</p>
-                <span className="shrink-0 font-mono text-xs uppercase">
-                  {alert.severity}
-                </span>
-              </div>
-              <p className="mt-2 text-xs opacity-80">
-                {alert.room} / {formatCreatedAt(alert.created_at)}
-              </p>
-            </article>
-          ))}
+        <div className="mt-5 space-y-3">
+          {sortedAlerts.map((alert) => {
+            const config = severityConfig[alert.severity];
+
+            return (
+              <article
+                key={alert.id}
+                className={`alert-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(0,0,0,0.28)] ${config.accent} ${config.surface}`}
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <p className="text-sm font-medium leading-relaxed text-text-primary">
+                    {alert.message}
+                  </p>
+                  <span
+                    className={`font-data shrink-0 rounded-md px-2 py-0.5 text-[0.675rem] font-semibold uppercase tracking-wider ${config.badge}`}
+                  >
+                    {alert.severity}
+                  </span>
+                </div>
+                <p className="mt-3 text-xs text-text-secondary">
+                  <span className="text-text-primary/80">{alert.room}</span>
+                  <span className="mx-1.5 text-white/20">·</span>
+                  <span className="font-data">{formatCreatedAt(alert.created_at)}</span>
+                </p>
+              </article>
+            );
+          })}
         </div>
       )}
     </section>
