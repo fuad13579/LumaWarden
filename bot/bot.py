@@ -87,12 +87,22 @@ class LumaWardenCog(commands.Cog):
 			return None
 
 	@commands.command(name="status")
-	async def status_command(self, ctx: commands.Context) -> None:
-		"""Show office-wide device status."""
+	async def status_command(self, ctx: commands.Context, *, room_name: str = "") -> None:
+		"""Show office-wide status, or a room status when a room name is provided."""
 
 		snapshot = await self._safe_snapshot(ctx)
 		if snapshot is None:
 			return
+
+		if room_name.strip():
+			room = normalize_room_name(room_name)
+			if room is None:
+				await ctx.reply("I know these rooms: `drawing`, `work1`, and `work2`.")
+				return
+
+			await ctx.reply(format_room(snapshot, room, self.personality))
+			return
+
 		await ctx.reply(format_status(snapshot, self.personality))
 
 	@commands.command(name="room")

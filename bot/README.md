@@ -7,6 +7,7 @@ The bot reads from the same FastAPI backend as the dashboard. It does not simula
 ## Features
 
 - `!status` - office-wide live device summary
+- `!status <name>` - room status shortcut, such as `!status Work Room 1`
 - `!room <name>` - live status for one room, such as `!room work1`
 - `!usage` - current power draw and per-room breakdown
 - `!summary` - previous day's after-hours wasted energy from backend tracking
@@ -49,7 +50,7 @@ Set these environment variables:
 
 ```bash
 DISCORD_TOKEN=your_bot_token
-DISCORD_CHANNEL_ID=123456789012345678
+DISCORD_CHANNEL_ID=your_channel_id
 LUMAWARDEN_API_BASE=http://127.0.0.1:8000
 BOT_PERSONALITY=warden
 AUTO_ALERT_INTERVAL_SECONDS=60
