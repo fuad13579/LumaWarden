@@ -10,7 +10,7 @@ const rooms = ["Drawing Room", "Work Room 1", "Work Room 2"] as const;
 
 function LoadingSkeleton() {
   return (
-    <div className="grid gap-5 lg:grid-cols-3">
+    <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
       {rooms.map((room) => (
         <section
           key={room}
@@ -51,7 +51,7 @@ export function DeviceStatusPanel({ devices }: DeviceStatusPanelProps) {
   }
 
   return (
-    <section aria-label="Device status panel" className="grid gap-6 lg:grid-cols-3">
+    <section aria-label="Device status panel" className="grid min-w-0 gap-6 2xl:grid-cols-3">
       {devicesByRoom.map(({ room, devices: roomDevices }) => {
         const activeCount = roomDevices.filter((device) => device.status === "on").length;
 
@@ -59,7 +59,7 @@ export function DeviceStatusPanel({ devices }: DeviceStatusPanelProps) {
           <section
             key={room}
             aria-label={`${room} device status`}
-            className="glass-card p-6"
+            className="glass-card min-w-0 p-5 sm:p-6"
           >
             <div className="mb-5 flex items-start justify-between gap-3">
               <div className="min-w-0">
@@ -81,7 +81,7 @@ export function DeviceStatusPanel({ devices }: DeviceStatusPanelProps) {
                 return (
                   <div
                     key={device.id}
-                    className="surface-nested flex items-center justify-between gap-3 px-3.5 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
+                    className="surface-nested flex min-w-0 items-center justify-between gap-3 px-3.5 py-3 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_24px_rgba(0,0,0,0.2)]"
                   >
                     <div className="flex min-w-0 items-center gap-3">
                       <span

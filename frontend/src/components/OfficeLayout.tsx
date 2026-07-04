@@ -99,8 +99,8 @@ export function OfficeLayout({ devices }: OfficeLayoutProps) {
   );
 
   return (
-    <section className="glass-card p-6 sm:p-7" aria-label="Office floor plan">
-      <div className="mb-7 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+    <section className="glass-card p-5 sm:p-6" aria-label="Office floor plan">
+      <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="panel-label">Floor Visualization</p>
           <h2 className="panel-title mt-1">Office Layout</h2>
@@ -108,7 +108,7 @@ export function OfficeLayout({ devices }: OfficeLayoutProps) {
             Top-view visual state of lights and fans across the floor
           </p>
         </div>
-        <div className="flex flex-wrap gap-4 text-xs">
+        <div className="flex flex-wrap gap-3 text-xs">
           <span className="inline-flex items-center gap-2 rounded-full border border-white/6 bg-bg-surface/50 px-3 py-1.5 text-accent-light badge-premium">
             <Lightbulb className="h-3.5 w-3.5" aria-hidden="true" />
             lights
@@ -120,11 +120,11 @@ export function OfficeLayout({ devices }: OfficeLayoutProps) {
         </div>
       </div>
 
-      <div className="grid min-w-0 gap-6 sm:gap-6 lg:grid-cols-3" role="img">
+      <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-3" role="img">
         {rooms.map((room) => (
           <div
             key={room.name}
-            className="room-floor min-h-[19rem]"
+            className="room-floor min-h-[18rem] sm:min-h-[19rem]"
             aria-label={`${room.name} visual status`}
           >
             <div className="absolute inset-x-0 top-0 z-10 border-b border-white/10 bg-[linear-gradient(180deg,rgba(23,27,34,0.92),rgba(17,20,27,0.86))] px-5 py-3 backdrop-blur-sm">

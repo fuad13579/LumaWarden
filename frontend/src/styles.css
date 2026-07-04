@@ -27,6 +27,12 @@
   background: var(--bg-base);
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 @theme {
   --color-bg-base: #0b0f14;
   --color-bg-card: #171b22;
@@ -42,12 +48,15 @@
 }
 
 html {
+  width: 100%;
   background: var(--bg-base);
 }
 
 body {
   margin: 0;
+  width: 100%;
   min-width: 320px;
+  overflow-x: hidden;
   color: var(--text-primary);
   background:
     radial-gradient(ellipse at top left, rgba(245, 158, 11, 0.1), transparent 30%),
@@ -58,6 +67,7 @@ body {
 }
 
 #root {
+  width: 100%;
   min-height: 100vh;
 }
 

@@ -19,6 +19,12 @@ type PowerMeterProps = {
 
 const roomNames = ["Drawing Room", "Work Room 1", "Work Room 2"] as const;
 
+const compactRoomLabels: Record<(typeof roomNames)[number], string> = {
+  "Drawing Room": "Drawing",
+  "Work Room 1": "Work 1",
+  "Work Room 2": "Work 2",
+};
+
 type ChartRow = {
   room: string;
   watts: number;
@@ -55,12 +61,20 @@ function PowerTooltip({
 export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: PowerMeterProps) {
   const totalWatts = usage?.total_watts ?? 0;
   const [nowMs, setNowMs] = useState(Date.now());
+  const [viewportWidth, setViewportWidth] = useState(() => window.innerWidth);
   const previousDayWasteKwh = wasteSummary?.previous_day.kwh ?? 0;
 
   useEffect(() => {
     const timerId = window.setInterval(() => setNowMs(Date.now()), 60_000);
+    const resizeHandler = () => setViewportWidth(window.innerWidth);
 
-    return () => window.clearInterval(timerId);
+    resizeHandler();
+    window.addEventListener("resize", resizeHandler);
+
+    return () => {
+      window.clearInterval(timerId);
+      window.removeEventListener("resize", resizeHandler);
+    };
   }, []);
 
   const chartData = useMemo(
@@ -77,8 +91,16 @@ export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: Powe
     return (totalWatts / 1000) * hoursSinceLoaded;
   }, [appLoadedAt, nowMs, totalWatts]);
 
+  const formatRoomLabel = (room: string): string => {
+    if (viewportWidth < 640 && room in compactRoomLabels) {
+      return compactRoomLabels[room as keyof typeof compactRoomLabels];
+    }
+
+    return room;
+  };
+
   return (
-    <section aria-label="Power meter" className="glass-card p-6 sm:p-6">
+    <section aria-label="Power meter" className="glass-card min-w-0 p-5 sm:p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="panel-label">Energy Monitor</p>
@@ -99,14 +121,15 @@ export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: Powe
         )}
       </div>
 
-      <div className="mt-6 h-52">
+      <div className="mt-6 h-44 sm:h-52">
         {isLoading ? (
           <div className="surface-nested flex h-full items-end gap-4 px-5 py-5">
             {[44, 68, 52].map((height) => (
               <div
                 key={height}
-                className="skeleton-shimmer flex-1 rounded-t-lg bg-bg-surface"
-                style={{ height: `${height}%` }}
+                className={`skeleton-shimmer flex-1 rounded-t-lg bg-bg-surface ${
+                  height === 44 ? "h-[44%]" : height === 68 ? "h-[68%]" : "h-[52%]"
+                }`}
               />
             ))}
           </div>
@@ -129,7 +152,8 @@ export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: Powe
                 dataKey="room"
                 axisLine={false}
                 tickLine={false}
-                tick={{ fill: "#8B95A5", fontSize: 11, fontFamily: "Inter, sans-serif" }}
+                tick={{ fill: "#8B95A5", fontSize: 10, fontFamily: "Inter, sans-serif" }}
+                tickFormatter={formatRoomLabel}
                 dy={8}
               />
               <YAxis
@@ -137,7 +161,7 @@ export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: Powe
                 tickLine={false}
                 tick={{
                   fill: "#8B95A5",
-                  fontSize: 11,
+                  fontSize: 10,
                   fontFamily: "JetBrains Mono, monospace",
                 }}
                 width={42}
@@ -156,7 +180,7 @@ export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: Powe
         )}
       </div>
 
-      <div className="mt-5 alert-card border-accent-light/20 bg-accent-light/6 px-5 py-4">
+      <div className="mt-5 alert-card border-accent-light/20 bg-accent-light/6 px-4 py-4 sm:px-5">
         <p className="panel-label text-accent-light/80">After-Hours Waste</p>
         {isLoading ? (
           <div className="mt-2.5 h-8 w-52 animate-pulse rounded-lg bg-accent-light/10" />

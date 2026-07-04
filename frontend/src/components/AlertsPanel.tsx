@@ -47,7 +47,7 @@ export function AlertsPanel({ alerts, isLoading }: AlertsPanelProps) {
   );
 
   return (
-    <section aria-label="Alerts" className="glass-card p-6 sm:p-6">
+    <section aria-label="Alerts" className="glass-card min-w-0 p-5 sm:p-6">
       <div className="flex items-baseline justify-between gap-3">
         <div>
           <p className="panel-label">System Events</p>
@@ -75,7 +75,7 @@ export function AlertsPanel({ alerts, isLoading }: AlertsPanelProps) {
           <p className="text-sm font-medium text-text-primary">No active alerts — all clear</p>
         </div>
       ) : (
-        <div className="mt-5 space-y-3">
+        <div className="mt-5 max-h-[28rem] space-y-3 overflow-y-auto pr-1 xl:max-h-[32rem]">
           {sortedAlerts.map((alert) => {
             const config = severityConfig[alert.severity];
 

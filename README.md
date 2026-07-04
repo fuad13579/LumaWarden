@@ -2,6 +2,38 @@
 
 LumaWarden is a FastAPI backend that acts as the single source of truth for the dashboard and Discord bot. It uses an in-memory simulator for a fixed office layout and exposes REST plus WebSocket endpoints for live reads.
 
+## Submission Snapshot
+
+- Frontend dashboard: React + Vite, reads live REST and WebSocket data from the backend.
+- Discord bot: reads the same backend APIs and never generates its own device state.
+- Circuit concept: Wokwi representative hardware for one room, used as a demo schematic.
+- Architecture diagram: [diagrams/lumawarden-architecture-diagram.drawio](diagrams/lumawarden-architecture-diagram.drawio) and [diagrams/architecture-diagram.png](diagrams/architecture-diagram.png).
+- Circuit docs: [diagrams/circuit-explanation.md](diagrams/circuit-explanation.md), [diagrams/pin-mapping.md](diagrams/pin-mapping.md), and [diagrams/wokwi-link.md](diagrams/wokwi-link.md).
+
+## Demo Flow
+
+1. Start the backend.
+2. Start the frontend dashboard.
+3. Open the dashboard in a browser.
+4. Show live power, device, and alert updates.
+5. Show the Discord bot commands: `!status`, `!room work1`, and `!usage`.
+6. Point judges to the architecture and circuit docs above.
+
+## Judging Checklist
+
+- Live backend source of truth is used by both the dashboard and the bot.
+- Device states, room usage, and alerts update from the shared backend snapshot.
+- The dashboard is responsive on mobile, tablet, laptop, and desktop widths.
+- There is no fake-looking clickable UI in the top header.
+- The project documents the architecture diagram and circuit schematic.
+- Setup commands and environment variables are clearly documented below.
+
+## Problem Statement Alignment
+
+- This repository uses the fixed 3-room, 15-device model implemented in the backend, frontend, bot, and tests.
+- The statement text also mentions 18 devices in places, which conflicts with the listed room breakdown.
+- The implementation keeps the shared backend state as the source of truth and does not add fake devices to reconcile that mismatch.
+
 ## Backend Setup
 
 From the repo root:
