@@ -1,5 +1,5 @@
 import { defineConfig, globalIgnores } from "eslint/config";
 
 export default defineConfig([
-  globalIgnores(["dist/**", "node_modules/**"]),
+  globalIgnores([".next/**", "dist/**", "node_modules/**"]),
 ]);
