@@ -5,6 +5,8 @@ LumaWarden is a FastAPI backend that acts as the single source of truth for the 
 ## Submission Snapshot
 
 - Frontend dashboard: React + Vite, reads live REST and WebSocket data from the backend.
+- Dashboard visualization: statement-style office floor plan with live light/fan indicators.
+- Energy view: live whole-office watts, per-room wattage bar chart, and after-hours waste summary.
 - Discord bot: reads the same backend APIs and never generates its own device state.
 - Circuit concept: Wokwi representative hardware for one room, used as a demo schematic.
 - Architecture diagram: [diagrams/lumawarden-architecture-diagram.drawio](diagrams/lumawarden-architecture-diagram.drawio) and [diagrams/architecture-diagram.png](diagrams/architecture-diagram.png).
@@ -16,13 +18,18 @@ LumaWarden is a FastAPI backend that acts as the single source of truth for the 
 2. Start the frontend dashboard.
 3. Open the dashboard in a browser.
 4. Show live power, device, and alert updates.
-5. Show the Discord bot commands: `!status`, `!room work1`, and `!usage`.
-6. Point judges to the architecture and circuit docs above.
+5. Show the office floor plan: yellow lights turn on/off and fans rotate when active.
+6. Show the power panel: total watts, per-room bar chart, and after-hours waste summary.
+7. Show the Discord bot commands: `!status`, `!room work1`, `!usage`, and `!summary`.
+8. Point judges to the architecture and circuit docs above.
 
 ## Judging Checklist
 
 - Live backend source of truth is used by both the dashboard and the bot.
 - Device states, room usage, and alerts update from the shared backend snapshot.
+- The floor visualization reflects backend device state instead of static artwork.
+- The power chart compares current room wattage as categories, not as a time-series trend.
+- After-hours alerts and waste estimates are calculated from backend device state.
 - The dashboard is responsive on mobile, tablet, laptop, and desktop widths.
 - There is no fake-looking clickable UI in the top header.
 - The project documents the architecture diagram and circuit schematic.
@@ -90,6 +97,7 @@ uvicorn backend.main:app --reload
 - OFF = 0W.
 - Simulator toggles 1-3 devices every 5-10 seconds.
 - WebSocket clients receive updated snapshots after device changes.
+- After-hours waste is accumulated in memory and resets when the backend restarts.
 
 > The problem statement mentions 18 devices in some places, but this project intentionally uses 15 based on the fixed room layout above.
 
@@ -100,6 +108,7 @@ uvicorn backend.main:app --reload
 - `GET /api/devices`
 - `GET /api/usage`
 - `GET /api/alerts`
+- `GET /api/summary`
 
 ## Snapshot Shape
 
@@ -134,6 +143,21 @@ Example response from `GET /api/snapshot`:
 
 - After-hours alert: triggered outside 9 AM-5 PM if any device is ON.
 - Long-running room alert: triggered if all 5 devices in a room are ON for more than 2 hours.
+
+## After-Hours Waste Summary
+
+`GET /api/summary` returns the office-hour settings, today's after-hours waste, and the previous day's after-hours waste. The calculation is based on each ON device's wattage and the amount of time it stayed ON outside office hours.
+
+This is prototype storage: the summary is kept in backend memory, so it resets when the backend process restarts. For a production deployment, this should be persisted in SQLite or another database.
+
+For a demo video, the office cutoff can be temporarily adjusted in [backend/alerts.py](backend/alerts.py):
+
+```python
+OFFICE_START_HOUR = 9
+OFFICE_END_HOUR = 17
+```
+
+Set `OFFICE_END_HOUR` to the current hour or earlier, then restart the backend to trigger after-hours behavior immediately.
 
 ## Discord Bot
 
