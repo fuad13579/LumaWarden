@@ -70,7 +70,7 @@ export function AlertsPanel({ alerts, isLoading }: AlertsPanelProps) {
           ))}
         </div>
       ) : alerts.length === 0 ? (
-        <div className="mt-5 flex items-center gap-3.5 rounded-[1rem] border border-white/8 bg-[linear-gradient(145deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
+        <div className="mt-5 flex items-center gap-3.5 rounded-[1rem] border border-white/8 bg-bg-surface/60 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
           <CheckCircle className="h-5 w-5 shrink-0 text-accent-power" aria-hidden="true" />
           <p className="text-sm font-medium text-text-primary">No active alerts — all clear</p>
         </div>
