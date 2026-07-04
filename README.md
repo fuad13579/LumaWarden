@@ -142,6 +142,7 @@ The bot is in `bot/`. It reads the same backend APIs as the dashboard and does n
 Features:
 
 - `!status` - live office-wide status
+- `!status <name>` - room status shortcut, such as `!status Work Room 1`
 - `!room <name>` - room status, such as `!room work1`
 - `!usage` - live wattage and today's tracked after-hours waste
 - `!summary` - previous day's after-hours wasted energy
@@ -161,7 +162,7 @@ Environment variables:
 
 ```powershell
 $env:DISCORD_TOKEN="your_bot_token"
-$env:DISCORD_CHANNEL_ID="123456789012345678"
+$env:DISCORD_CHANNEL_ID="your_channel_id"
 $env:LUMAWARDEN_API_BASE="http://127.0.0.1:8000"
 $env:BOT_PERSONALITY="warden"
 ```
