@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import {
-  Bar,
-  BarChart,
+  Area,
+  AreaChart,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
@@ -42,8 +42,8 @@ function PowerTooltip({
   const entry = payload[0];
 
   return (
-    <div className="rounded-xl border border-white/10 bg-bg-card/95 px-4 py-3 shadow-[0_10px_34px_rgba(0,0,0,0.46)] backdrop-blur-sm">
-      <p className="text-xs text-text-secondary">{entry.payload.room}</p>
+    <div className="rounded-xl border border-white/10 bg-[linear-gradient(145deg,rgba(23,27,34,0.95),rgba(15,19,26,0.95))] px-4 py-3 shadow-[0_12px_34px_rgba(0,0,0,0.4)] backdrop-blur-sm">
+      <p className="text-[0.68rem] uppercase tracking-[0.16em] text-text-secondary">{entry.payload.room}</p>
       <p className="font-data mt-1 text-lg font-semibold text-accent-power">
         {entry.value.toLocaleString()} W
       </p>
@@ -84,7 +84,7 @@ export function PowerMeter({ usage, appLoadedAt, isLoading }: PowerMeterProps) {
           <p className="mt-1.5 text-sm text-text-secondary">Live whole-office draw</p>
         </div>
         {isLoading ? (
-          <div className="h-16 w-40 animate-pulse rounded-xl bg-bg-surface" />
+          <div className="skeleton-shimmer h-16 w-40 rounded-xl bg-bg-surface/80" />
         ) : (
           <div className="text-right">
             <p className="font-data glow-power text-5xl font-bold leading-none tracking-tight text-accent-power sm:text-6xl">
@@ -103,19 +103,26 @@ export function PowerMeter({ usage, appLoadedAt, isLoading }: PowerMeterProps) {
             {[44, 68, 52].map((height) => (
               <div
                 key={height}
-                className="flex-1 animate-pulse rounded-t-lg bg-bg-surface"
+                className="skeleton-shimmer flex-1 rounded-t-lg bg-bg-surface"
                 style={{ height: `${height}%` }}
               />
             ))}
           </div>
         ) : (
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>
-              <CartesianGrid
-                stroke="rgb(255 255 255 / 0.05)"
-                strokeDasharray="4 4"
-                vertical={false}
-              />
+            <AreaChart data={chartData} margin={{ top: 10, right: 8, left: -12, bottom: 0 }}>
+              <defs>
+                <linearGradient id="powerLineGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="#f59e0b" stopOpacity={0.5} />
+                  <stop offset="55%" stopColor="#f59e0b" stopOpacity={0.2} />
+                  <stop offset="100%" stopColor="#52f2d5" stopOpacity={0.03} />
+                </linearGradient>
+                <linearGradient id="powerStrokeGradient" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#f59e0b" />
+                  <stop offset="100%" stopColor="#52f2d5" />
+                </linearGradient>
+              </defs>
+              <CartesianGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" vertical={false} />
               <XAxis
                 dataKey="room"
                 axisLine={false}
@@ -133,27 +140,16 @@ export function PowerMeter({ usage, appLoadedAt, isLoading }: PowerMeterProps) {
                 }}
                 width={42}
               />
-              <defs>
-                <linearGradient id="powerBarGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#f59e0b" stopOpacity={1} />
-                  <stop offset="55%" stopColor="#f59e0b" stopOpacity={0.88} />
-                  <stop offset="100%" stopColor="#52f2d5" stopOpacity={0.35} />
-                </linearGradient>
-                <filter id="barShadow" x="-50%" y="-50%" width="200%" height="200%">
-                  <feDropShadow dx="0" dy="6" stdDeviation="10" floodColor="#000" floodOpacity="0.35" />
-                </filter>
-              </defs>
-              <Tooltip
-                content={<PowerTooltip />}
-                cursor={{ fill: "rgb(245 158 11 / 0.08)" }}
-              />
-              <Bar
+              <Tooltip content={<PowerTooltip />} cursor={{ stroke: "rgba(245,158,11,0.3)", strokeWidth: 1 }} />
+              <Area
+                type="monotone"
                 dataKey="watts"
-                fill="url(#powerBarGradient)"
-                radius={[10, 10, 4, 4]}
-                maxBarSize={62}
+                stroke="url(#powerStrokeGradient)"
+                strokeWidth={2.5}
+                fill="url(#powerLineGradient)"
+                activeDot={{ r: 4, fill: "#f59e0b", stroke: "#fff", strokeWidth: 2 }}
               />
-            </BarChart>
+            </AreaChart>
           </ResponsiveContainer>
         )}
       </div>
