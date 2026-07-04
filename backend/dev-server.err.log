@@ -13,3 +13,14 @@ INFO:     connection closed
 INFO:     ('127.0.0.1', 65021) - "WebSocket /ws" [accepted]
 INFO:     connection open
 INFO:     connection closed
+INFO:     ('127.0.0.1', 57535) - "WebSocket /ws" [accepted]
+INFO:     connection open
+INFO:     ('127.0.0.1', 63073) - "WebSocket /ws" [accepted]
+INFO:     connection open
+INFO:     ('127.0.0.1', 51013) - "WebSocket /ws" [accepted]
+INFO:     connection open
+INFO:     connection closed
+INFO:     ('127.0.0.1', 61559) - "WebSocket /ws" [accepted]
+INFO:     connection open
+INFO:     ('127.0.0.1', 63786) - "WebSocket /ws" [accepted]
+INFO:     connection open
