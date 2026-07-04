@@ -1,0 +1,134 @@
+{
+  "version": 1,
+  "author": "Fuad Bin Sattar",
+  "editor": "wokwi",
+  "parts": [
+    { "type": "board-esp32-devkit-c-v4", "id": "esp", "top": -48, "left": 177.64, "attrs": {} },
+    { "type": "wokwi-slide-switch", "id": "sw_fan01", "top": -187.6, "left": 415.9, "attrs": {} },
+    { "type": "wokwi-slide-switch", "id": "sw_fan02", "top": -130, "left": 540.7, "attrs": {} },
+    { "type": "wokwi-slide-switch", "id": "sw_light01", "top": -82, "left": 627.1, "attrs": {} },
+    {
+      "type": "wokwi-slide-switch",
+      "id": "sw_light02",
+      "top": -120.4,
+      "left": 713.5,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-slide-switch",
+      "id": "sw_light03",
+      "top": -187.6,
+      "left": 819.1,
+      "attrs": {}
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_fan01",
+      "top": -109.2,
+      "left": -140.2,
+      "attrs": { "color": "blue" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_fan02",
+      "top": -70.8,
+      "left": -63.4,
+      "attrs": { "color": "blue" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_light01",
+      "top": 217.2,
+      "left": -25,
+      "attrs": { "color": "yellow" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_light02",
+      "top": 303.6,
+      "left": 32.6,
+      "attrs": { "color": "yellow" }
+    },
+    {
+      "type": "wokwi-led",
+      "id": "led_light03",
+      "top": 370.8,
+      "left": 80.6,
+      "attrs": { "color": "yellow" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_light01",
+      "top": -92.05,
+      "left": 278.4,
+      "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_light02",
+      "top": 186.35,
+      "left": 374.4,
+      "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_light03",
+      "top": 234.35,
+      "left": 547.2,
+      "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_fan01",
+      "top": 157.55,
+      "left": 67.2,
+      "attrs": { "value": "220" }
+    },
+    {
+      "type": "wokwi-resistor",
+      "id": "r_fan02",
+      "top": 32.75,
+      "left": 9.6,
+      "attrs": { "value": "220" }
+    },
+    { "type": "wokwi-potentiometer", "id": "pot1", "top": 315.5, "left": 249.4, "attrs": {} }
+  ],
+  "connections": [
+    [ "esp:TX", "$serialMonitor:RX", "", [] ],
+    [ "esp:RX", "$serialMonitor:TX", "", [] ],
+    [ "esp:18", "sw_fan01:2", "green", [ "h0" ] ],
+    [ "sw_fan01:1", "esp:GND.1", "black", [ "v0" ] ],
+    [ "sw_fan01:3", "esp:3V3", "red", [ "v0" ] ],
+    [ "esp:19", "sw_fan02:2", "green", [ "h0" ] ],
+    [ "sw_fan02:1", "esp:GND.1", "black", [ "v0" ] ],
+    [ "sw_fan02:3", "esp:3V3", "red", [ "v0" ] ],
+    [ "esp:21", "sw_light01:2", "green", [ "h0" ] ],
+    [ "sw_light01:1", "esp:GND.1", "black", [ "v0" ] ],
+    [ "sw_light01:3", "esp:3V3", "red", [ "v0" ] ],
+    [ "esp:22", "sw_light02:2", "green", [ "h0" ] ],
+    [ "sw_light02:1", "esp:GND.1", "black", [ "v0" ] ],
+    [ "sw_light02:3", "esp:3V3", "red", [ "v0" ] ],
+    [ "esp:23", "sw_light03:2", "green", [ "h0" ] ],
+    [ "sw_light03:1", "esp:GND.1", "black", [ "v0" ] ],
+    [ "sw_light03:3", "esp:3V3", "red", [ "v0" ] ],
+    [ "esp:26", "r_fan01:1", "orange", [ "h0" ] ],
+    [ "r_fan01:2", "led_fan01:A", "orange", [ "h0" ] ],
+    [ "led_fan01:C", "esp:GND.1", "black", [ "v0" ] ],
+    [ "esp:27", "r_fan02:1", "orange", [ "h0" ] ],
+    [ "r_fan02:2", "led_fan02:A", "orange", [ "h0" ] ],
+    [ "led_fan02:C", "esp:GND.1", "black", [ "v0" ] ],
+    [ "esp:13", "r_light01:1", "orange", [ "h0" ] ],
+    [ "r_light01:2", "led_light01:A", "orange", [ "h0" ] ],
+    [ "led_light01:C", "esp:GND.1", "black", [ "v0" ] ],
+    [ "esp:12", "r_light02:1", "orange", [ "h0" ] ],
+    [ "r_light02:2", "led_light02:A", "orange", [ "h0" ] ],
+    [ "led_light02:C", "esp:GND.1", "black", [ "v0" ] ],
+    [ "esp:14", "r_light03:1", "orange", [ "h0" ] ],
+    [ "r_light03:2", "led_light03:A", "orange", [ "h0" ] ],
+    [ "led_light03:C", "esp:GND.1", "black", [ "v0" ] ],
+    [ "pot1:VCC", "esp:3V3", "red", [ "v0" ] ],
+    [ "pot1:GND", "esp:GND.1", "black", [ "v0" ] ],
+    [ "pot1:SIG", "esp:34", "purple", [ "h0" ] ]
+  ],
+  "dependencies": {}
+}

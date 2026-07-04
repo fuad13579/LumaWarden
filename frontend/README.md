@@ -1,36 +1,77 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LumaWarden Frontend
 
-## Getting Started
+React + Vite dashboard for the LumaWarden office monitoring system.
 
-First, run the development server:
+The frontend does not generate device data. It reads the shared backend snapshot through REST and receives live updates through WebSocket.
+
+## Backend Dependency
+
+Start the backend from the repository root before running the dashboard:
+
+```bash
+uvicorn backend.main:app --reload
+```
+
+Expected backend URLs:
+
+- REST API: `http://localhost:8000`
+- WebSocket: `ws://localhost:8000/ws`
+- Swagger docs: `http://localhost:8000/docs`
+
+## Setup
+
+Install frontend dependencies:
+
+```bash
+npm install
+```
+
+## Run
+
+Start the Vite dev server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:5173
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The backend CORS policy already allows `localhost:5173`.
 
-## Learn More
+## Backend URL Override
 
-To learn more about Next.js, take a look at the following resources:
+By default, the frontend uses:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+http://localhost:8000
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+To point the dashboard at a different backend:
 
-## Deploy on Vercel
+```bash
+VITE_API_BASE_URL=http://localhost:9000 npm run dev
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Windows PowerShell:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```powershell
+$env:VITE_API_BASE_URL="http://localhost:9000"
+npm run dev
+```
+
+## Data Flow
+
+- Initial and fallback reads use `GET /api/snapshot`.
+- Live updates use `WebSocket /ws`.
+- Device panels, power meters, office layout, and alerts all render from backend snapshots.
+- If WebSocket disconnects, the dashboard falls back to polling and retries the WebSocket connection.
+
+## Validation
+
+```bash
+npm run build
+```
