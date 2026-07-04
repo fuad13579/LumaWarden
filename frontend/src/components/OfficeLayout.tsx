@@ -1,4 +1,3 @@
-import { motion, useReducedMotion } from "framer-motion";
 import { Fan, Lightbulb } from "lucide-react";
 import { useMemo } from "react";
 import type { Device } from "../types/device";
@@ -10,85 +9,112 @@ type OfficeLayoutProps = {
 type RoomName = Device["room"];
 type DeviceKind = Device["type"];
 
-type Marker = {
+type DevicePoint = {
+  id: string;
+  room: RoomName;
   type: DeviceKind;
-  index: number;
-  top: string;
-  left: string;
+  x: number;
+  y: number;
 };
 
-const rooms: Array<{ name: RoomName; prefix: string }> = [
-  { name: "Drawing Room", prefix: "drawing" },
-  { name: "Work Room 1", prefix: "work1" },
-  { name: "Work Room 2", prefix: "work2" },
+const devicePoints: DevicePoint[] = [
+  { id: "drawing_light_1", room: "Drawing Room", type: "light", x: 114, y: 82 },
+  { id: "drawing_light_2", room: "Drawing Room", type: "light", x: 306, y: 82 },
+  { id: "drawing_light_3", room: "Drawing Room", type: "light", x: 210, y: 451 },
+  { id: "drawing_fan_1", room: "Drawing Room", type: "fan", x: 211, y: 93 },
+  { id: "drawing_fan_2", room: "Drawing Room", type: "fan", x: 226, y: 382 },
+  { id: "work1_light_1", room: "Work Room 1", type: "light", x: 460, y: 82 },
+  { id: "work1_light_2", room: "Work Room 1", type: "light", x: 646, y: 82 },
+  { id: "work1_light_3", room: "Work Room 1", type: "light", x: 548, y: 451 },
+  { id: "work1_fan_1", room: "Work Room 1", type: "fan", x: 552, y: 94 },
+  { id: "work1_fan_2", room: "Work Room 1", type: "fan", x: 552, y: 340 },
+  { id: "work2_light_1", room: "Work Room 2", type: "light", x: 805, y: 82 },
+  { id: "work2_light_2", room: "Work Room 2", type: "light", x: 991, y: 82 },
+  { id: "work2_light_3", room: "Work Room 2", type: "light", x: 893, y: 451 },
+  { id: "work2_fan_1", room: "Work Room 2", type: "fan", x: 897, y: 94 },
+  { id: "work2_fan_2", room: "Work Room 2", type: "fan", x: 897, y: 340 },
 ];
 
-const markers: Marker[] = [
-  { type: "fan", index: 1, top: "13%", left: "32%" },
-  { type: "fan", index: 2, top: "13%", left: "68%" },
-  { type: "light", index: 1, top: "36%", left: "20%" },
-  { type: "light", index: 2, top: "54%", left: "50%" },
-  { type: "light", index: 3, top: "36%", left: "80%" },
-];
-
-function getDeviceId(prefix: string, type: DeviceKind, index: number): string {
-  return `${prefix}_${type}_${index}`;
+function isOn(device: Device | undefined): boolean {
+  return device?.status === "on";
 }
 
-function RoomFurniture({ room }: { room: RoomName }) {
-  const isDrawing = room === "Drawing Room";
-
+function Desk({ x, y }: { x: number; y: number }) {
   return (
-    <>
-      <div className="absolute left-[8%] top-[22%] h-[24%] w-[32%] rounded-[1rem] border border-white/10 bg-[#202633] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_20px_rgba(0,0,0,0.18)]" />
-      <div className="absolute right-[8%] top-[22%] h-[24%] w-[32%] rounded-[1rem] border border-white/10 bg-[#202633] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_20px_rgba(0,0,0,0.18)]" />
-      <div className="absolute bottom-[11%] left-[14%] h-[20%] w-[32%] rounded-[1rem] border border-white/10 bg-[#232a35] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_20px_rgba(0,0,0,0.18)]" />
-      <div className="absolute bottom-[11%] right-[14%] h-[20%] w-[32%] rounded-[1rem] border border-white/10 bg-[#232a35] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_20px_rgba(0,0,0,0.18)]" />
-      <div className="absolute bottom-[18%] left-[49%] h-[14%] w-[12%] -translate-x-1/2 rounded-[0.75rem] border border-white/10 bg-[#1c212a] shadow-[0_8px_18px_rgba(0,0,0,0.24)]" />
-      <div className="absolute bottom-[31%] left-[20%] h-[5%] w-[15%] rounded-full border border-white/5 bg-[#1b2028]" />
-      <div className="absolute bottom-[31%] right-[20%] h-[5%] w-[15%] rounded-full border border-white/5 bg-[#1b2028]" />
-      {isDrawing ? (
-        <>
-          <div className="absolute bottom-[38%] left-[22%] h-[9%] w-[18%] rounded-[0.8rem] border border-white/10 bg-[#1e2430]" />
-          <div className="absolute bottom-[38%] right-[22%] h-[9%] w-[18%] rounded-[0.8rem] border border-white/10 bg-[#1e2430]" />
-        </>
-      ) : null}
-      <div className="absolute bottom-[8%] left-[44%] h-[5%] w-[12%] -translate-x-1/2 rounded-full border border-white/8 bg-[#151922]" />
-    </>
+    <g className="floor-plan-furniture">
+      <rect x={x} y={y} width="74" height="46" rx="4" className="floor-desk" />
+      <rect x={x + 23} y={y + 11} width="31" height="11" rx="2" className="floor-monitor" />
+      <rect x={x + 21} y={y + 30} width="35" height="7" rx="2" className="floor-keyboard" />
+      <rect x={x + 22} y={y - 15} width="31" height="14" rx="5" className="floor-chair" />
+      <rect x={x + 23} y={y + 46} width="28" height="14" rx="5" className="floor-chair" />
+    </g>
   );
 }
 
-function DeviceMarker({ device, marker }: { device: Device | null; marker: Marker }) {
-  const prefersReducedMotion = useReducedMotion();
-  const isOn = device?.status === "on";
-  const isFan = marker.type === "fan";
-  const Icon = isFan ? Fan : Lightbulb;
+function Plant({ x, y }: { x: number; y: number }) {
+  return (
+    <g transform={`translate(${x} ${y})`} className="floor-plan-furniture">
+      <circle r="5" className="floor-plant-pot" />
+      {Array.from({ length: 8 }, (_, index) => (
+        <ellipse
+          key={index}
+          cx="0"
+          cy="-8"
+          rx="3"
+          ry="10"
+          className="floor-plant-leaf"
+          transform={`rotate(${index * 45})`}
+        />
+      ))}
+    </g>
+  );
+}
+
+function FanDevice({ point, device }: { point: DevicePoint; device?: Device }) {
+  const on = isOn(device);
+  const label = `${device?.name ?? "Fan"} in ${point.room} ${device?.status ?? "off"}`;
 
   return (
-    <motion.div
-      className="absolute -translate-x-1/2 -translate-y-1/2 transition-transform duration-200"
-      style={{ top: marker.top, left: marker.left }}
-      animate={{ scale: isOn ? 1.05 : 1, opacity: isOn ? 1 : 0.65 }}
-      transition={{ duration: prefersReducedMotion ? 0 : 0.35, ease: "easeOut" }}
-      aria-label={`${device?.name ?? marker.type} ${device?.status ?? "off"}`}
+    <g
+      transform={`translate(${point.x} ${point.y})`}
+      className={on ? "floor-device is-on" : "floor-device"}
+      aria-label={label}
     >
-      {isOn && !isFan ? <span className="light-bloom" aria-hidden="true" /> : null}
+      <circle r="12" className="floor-fan-hub" />
+      <g className={on ? "floor-fan-blades is-spinning" : "floor-fan-blades"}>
+        {on ? (
+          <animateTransform
+            attributeName="transform"
+            type="rotate"
+            from="0 0 0"
+            to="360 0 0"
+            dur="1.4s"
+            repeatCount="indefinite"
+          />
+        ) : null}
+        <rect x="-6" y="-58" width="12" height="48" rx="6" className="floor-fan-blade" />
+        <rect x="-6" y="-58" width="12" height="48" rx="6" className="floor-fan-blade" transform="rotate(120)" />
+        <rect x="-6" y="-58" width="12" height="48" rx="6" className="floor-fan-blade" transform="rotate(240)" />
+      </g>
+      <circle r="6" className="floor-fan-cap" />
+    </g>
+  );
+}
 
-      <div
-        className={`relative grid h-11 w-11 place-items-center rounded-full border backdrop-blur-sm transition-all duration-200 ${
-          isOn
-            ? isFan
-              ? "device-on-fan"
-              : "device-on-light"
-            : "device-off"
-        }`}
-      >
-        <Icon
-          className={`h-5 w-5 ${isFan && isOn && !prefersReducedMotion ? "fan-spin" : ""}`}
-          aria-hidden="true"
-        />
-      </div>
-    </motion.div>
+function LightDevice({ point, device }: { point: DevicePoint; device?: Device }) {
+  const on = isOn(device);
+  const label = `${device?.name ?? "Light"} in ${point.room} ${device?.status ?? "off"}`;
+
+  return (
+    <g
+      transform={`translate(${point.x} ${point.y})`}
+      className={on ? "floor-device is-on" : "floor-device"}
+      aria-label={label}
+    >
+      {on ? <circle r="27" className="floor-light-glow" /> : null}
+      <circle r="13" className="floor-light-ring" />
+      <circle r="9" className="floor-light-core" />
+    </g>
   );
 }
 
@@ -103,9 +129,9 @@ export function OfficeLayout({ devices }: OfficeLayoutProps) {
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <p className="panel-label">Floor Visualization</p>
-          <h2 className="panel-title mt-1">Office Layout</h2>
+          <h2 className="panel-title mt-1">Statement Office Layout</h2>
           <p className="mt-1.5 text-sm text-text-secondary">
-            Top-view visual state of lights and fans across the floor
+            Live lights and fans mapped onto the provided top-view floor plan
           </p>
         </div>
         <div className="flex flex-wrap gap-3 text-xs">
@@ -120,45 +146,88 @@ export function OfficeLayout({ devices }: OfficeLayoutProps) {
         </div>
       </div>
 
-      <div className="grid min-w-0 gap-4 md:grid-cols-2 xl:grid-cols-3" role="img">
-        {rooms.map((room) => (
-          <div
-            key={room.name}
-            className="room-floor min-h-[18rem] sm:min-h-[19rem]"
-            aria-label={`${room.name} visual status`}
-          >
-            <div className="absolute inset-x-0 top-0 z-10 border-b border-white/10 bg-[linear-gradient(180deg,rgba(23,27,34,0.92),rgba(17,20,27,0.86))] px-5 py-3 backdrop-blur-sm">
-              <h3 className="truncate text-center text-sm font-semibold tracking-[0.02em] text-text-primary">
-                {room.name}
-              </h3>
-            </div>
+      <div className="floor-plan-shell" role="img" aria-label="Live office floor plan with rooms, lights, and fans">
+        <svg viewBox="0 0 1080 620" className="floor-plan-svg">
+          <defs>
+            <pattern id="floorGrid" width="32" height="32" patternUnits="userSpaceOnUse">
+              <path d="M 32 0 L 0 0 0 32" className="floor-grid-line" fill="none" />
+            </pattern>
+          </defs>
 
-            <div className="room-floor-grid absolute inset-0 opacity-80" aria-hidden="true" />
-            <div className="absolute inset-[7%] rounded-[1.25rem] border-[8px] border-[#2f3742] shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_10px_24px_rgba(0,0,0,0.18)]" aria-hidden="true" />
-            <div className="absolute inset-x-[14%] top-[15%] h-[10%] rounded-[0.75rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
-            <div className="absolute left-[10%] top-[24%] h-[10%] w-[10%] rounded-[0.6rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
-            <div className="absolute right-[10%] top-[24%] h-[10%] w-[10%] rounded-[0.6rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
-            <div className="absolute bottom-[9%] left-[14%] h-[7%] w-[10%] rounded-[0.6rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
-            <div className="absolute bottom-[9%] right-[14%] h-[7%] w-[10%] rounded-[0.6rem] border border-white/8 bg-[#1a2028]/70" aria-hidden="true" />
-            <div
-              className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_80%,rgba(245,158,11,0.08),transparent)]"
-              aria-hidden="true"
-            />
+          <rect x="8" y="8" width="1064" height="604" rx="4" className="floor-plan-bg" />
+          <rect x="20" y="20" width="1040" height="590" className="floor-room-fill" />
+          <rect x="20" y="20" width="1040" height="590" fill="url(#floorGrid)" opacity="0.9" />
 
-            <RoomFurniture room={room.name} />
+          <rect x="20" y="20" width="350" height="490" className="floor-room-room" />
+          <rect x="380" y="20" width="335" height="490" className="floor-room-room" />
+          <rect x="725" y="20" width="335" height="490" className="floor-room-room" />
+          <rect x="20" y="520" width="1040" height="90" className="floor-room-corridor" />
 
-            {markers.map((marker) => (
-              <DeviceMarker
-                key={`${room.name}-${marker.type}-${marker.index}`}
-                marker={marker}
-                device={
-                  devicesById.get(getDeviceId(room.prefix, marker.type, marker.index)) ??
-                  null
-                }
-              />
-            ))}
-          </div>
-        ))}
+          <g className="floor-walls">
+            <line x1="20" y1="20" x2="1060" y2="20" />
+            <line x1="20" y1="20" x2="20" y2="610" />
+            <line x1="1060" y1="20" x2="1060" y2="610" />
+            <line x1="20" y1="610" x2="535" y2="610" />
+            <line x1="590" y1="610" x2="1060" y2="610" />
+
+            <line x1="370" y1="20" x2="370" y2="510" />
+            <line x1="380" y1="20" x2="380" y2="510" />
+            <line x1="715" y1="20" x2="715" y2="510" />
+            <line x1="725" y1="20" x2="725" y2="510" />
+
+            <line x1="20" y1="510" x2="210" y2="510" />
+            <line x1="250" y1="510" x2="400" y2="510" />
+            <line x1="440" y1="510" x2="750" y2="510" />
+            <line x1="790" y1="510" x2="1060" y2="510" />
+            <line x1="20" y1="520" x2="210" y2="520" />
+            <line x1="250" y1="520" x2="400" y2="520" />
+            <line x1="440" y1="520" x2="750" y2="520" />
+            <line x1="790" y1="520" x2="1060" y2="520" />
+          </g>
+
+          <path d="M210 510 A40 40 0 0 1 250 470" className="floor-door" />
+          <path d="M400 510 A40 40 0 0 1 440 470" className="floor-door" />
+          <path d="M750 510 A40 40 0 0 1 790 470" className="floor-door" />
+          <path d="M535 610 A42 42 0 0 1 577 568" className="floor-door" />
+
+          <rect x="140" y="210" width="120" height="110" rx="3" className="floor-rug" />
+          <rect x="40" y="185" width="60" height="170" rx="10" className="floor-sofa" />
+          <rect x="64" y="386" width="48" height="64" rx="8" className="floor-sofa" transform="rotate(28 88 418)" />
+          <rect x="145" y="235" width="45" height="88" rx="3" className="floor-table" />
+          <Plant x={52} y={55} />
+          <Plant x={330} y={452} />
+          <Plant x={52} y={560} />
+          <Plant x={942} y={590} />
+
+          <Desk x={407} y={186} />
+          <Desk x={617} y={186} />
+          <Desk x={407} y={318} />
+          <Desk x={617} y={318} />
+          <Desk x={752} y={186} />
+          <Desk x={962} y={186} />
+          <Desk x={752} y={318} />
+          <Desk x={962} y={318} />
+          <Plant x={764} y={194} />
+          <Plant x={1018} y={194} />
+          <Plant x={764} y={326} />
+          <Plant x={1018} y={326} />
+
+          <rect x="993" y="548" width="31" height="40" rx="5" className="floor-water-base" />
+          <ellipse cx="1008.5" cy="548" rx="16" ry="8" className="floor-water-top" />
+          <rect x="996" y="526" width="25" height="34" rx="8" className="floor-water-bottle" />
+
+          <text x="195" y="188" className="floor-room-label">DRAWING ROOM</text>
+          <text x="552" y="270" className="floor-room-label">WORK ROOM 1</text>
+          <text x="887" y="270" className="floor-room-label">WORK ROOM 2</text>
+
+          {devicePoints.map((point) =>
+            point.type === "fan" ? (
+              <FanDevice key={point.id} point={point} device={devicesById.get(point.id)} />
+            ) : (
+              <LightDevice key={point.id} point={point} device={devicesById.get(point.id)} />
+            ),
+          )}
+        </svg>
       </div>
     </section>
   );

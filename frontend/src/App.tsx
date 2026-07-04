@@ -68,42 +68,29 @@ function App() {
       value: `${(stream.usage?.total_watts ?? 0).toLocaleString()} W`,
       icon: Zap,
       accent: "text-accent-light",
-      tone: "from-accent-light/10 to-transparent",
     },
     {
       label: "Devices ON",
       value: `${stream.devices.filter((device) => device.status === "on").length} / ${stream.devices.length}`,
       icon: Activity,
       accent: "text-accent-power",
-      tone: "from-accent-power/10 to-transparent",
     },
     {
       label: "Active Alerts",
       value: `${stream.alerts.length}`,
       icon: AlertTriangle,
       accent: "text-danger",
-      tone: "from-danger/10 to-transparent",
     },
     {
       label: "Connection",
       value: stream.connectionState === "connected" ? "Live" : stream.connectionState === "reconnecting" ? "Reconnecting" : "Polling",
       icon: Wifi,
       accent: "text-text-primary",
-      tone: "from-white/10 to-transparent",
     },
   ];
 
   return (
     <main className="relative min-h-screen overflow-x-hidden bg-bg-base text-text-primary">
-      <div
-        className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(82,242,213,0.08),transparent)]"
-        aria-hidden="true"
-      />
-      <div
-        className="pointer-events-none fixed inset-0 bg-[radial-gradient(ellipse_60%_40%_at_100%_100%,rgba(245,158,11,0.06),transparent)]"
-        aria-hidden="true"
-      />
-
       <section
         className="premium-shell fade-in-up relative mx-auto flex min-h-screen w-full min-w-0 max-w-[1500px] flex-col gap-7 overflow-x-clip px-4 py-4 sm:gap-8 sm:px-6 lg:px-8 lg:py-8"
         aria-label="LumaWarden dashboard"
@@ -117,7 +104,7 @@ function App() {
         />
         {showFailureBanner ? (
           <div
-            className="flex items-center justify-between gap-4 rounded-[1.25rem] border border-accent-light/20 bg-[linear-gradient(135deg,rgba(245,158,11,0.16),rgba(245,158,11,0.08))] px-5 py-3.5 shadow-[0_14px_34px_rgba(0,0,0,0.24)] backdrop-blur-sm"
+            className="flex items-center justify-between gap-4 rounded-[1.25rem] border border-accent-light/20 bg-accent-light/10 px-5 py-3.5 shadow-[0_14px_34px_rgba(0,0,0,0.24)] backdrop-blur-sm"
             role="status"
           >
             <p className="text-sm font-medium text-text-primary">
@@ -141,9 +128,8 @@ function App() {
       />
 
       <div className="grid min-w-0 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {summaryCards.map(({ label, value, icon: Icon, accent, tone }) => (
-          <div key={label} className={`summary-card relative min-w-0 overflow-hidden rounded-[1.3rem] bg-gradient-to-br ${tone}`}>
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.08),transparent_55%)]" />
+        {summaryCards.map(({ label, value, icon: Icon, accent }) => (
+          <div key={label} className="summary-card relative min-w-0 overflow-hidden rounded-[1.3rem]">
             <div className="relative flex items-center justify-between gap-2">
               <p className="text-[0.68rem] font-semibold uppercase tracking-[0.16em] text-text-secondary">
                 {label}
@@ -159,7 +145,7 @@ function App() {
         ))}
       </div>
 
-      <div className="rounded-[1.6rem] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.03),rgba(255,255,255,0.01))] p-2 shadow-[0_24px_64px_rgba(0,0,0,0.28)]">
+      <div className="rounded-[1.6rem] border border-white/10 bg-bg-card/70 p-2 shadow-[0_24px_64px_rgba(0,0,0,0.28)]">
         <OfficeLayout devices={stream.devices} />
       </div>
 

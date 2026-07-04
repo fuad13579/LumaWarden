@@ -2,10 +2,10 @@ import { Home, Activity, Bell, Settings, Layers, Sparkles } from "lucide-react";
 
 export function Sidebar() {
   return (
-    <aside className="h-full min-h-screen w-72 border-r border-white/10 bg-[linear-gradient(180deg,rgba(23,27,34,0.95),rgba(13,16,21,0.95))] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
+    <aside className="h-full min-h-screen w-72 border-r border-white/10 bg-bg-card p-6 shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
       <div className="flex h-full flex-col justify-between">
         <div>
-          <div className="mb-8 flex items-center gap-3 rounded-[1.2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.06),rgba(255,255,255,0.02))] px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_30px_rgba(0,0,0,0.2)]">
+          <div className="mb-8 flex items-center gap-3 rounded-[1.2rem] border border-white/10 bg-bg-surface/70 px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_30px_rgba(0,0,0,0.2)]">
             <div className="brand-mark grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-accent-light">
               <Sparkles className="h-4 w-4" />
             </div>
@@ -39,7 +39,7 @@ export function Sidebar() {
           </nav>
         </div>
 
-        <div className="mt-6 rounded-[1.2rem] border border-white/10 bg-[linear-gradient(145deg,rgba(255,255,255,0.045),rgba(255,255,255,0.015))] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_12px_24px_rgba(0,0,0,0.18)]">
+        <div className="mt-6 rounded-[1.2rem] border border-white/10 bg-bg-surface/60 p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.04),0_12px_24px_rgba(0,0,0,0.18)]">
           <button className="button-premium w-full rounded-xl border border-white/10 bg-bg-card/70 px-3 py-2 text-sm font-semibold text-text-primary transition-colors hover:bg-bg-card">Log out</button>
         </div>
       </div>
