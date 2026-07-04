@@ -8,10 +8,11 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { Usage } from "../types/device";
+import type { Usage, WasteSummary } from "../types/device";
 
 type PowerMeterProps = {
   usage: Usage | null;
+  wasteSummary: WasteSummary | null;
   appLoadedAt: number;
   isLoading: boolean;
 };
@@ -51,9 +52,10 @@ function PowerTooltip({
   );
 }
 
-export function PowerMeter({ usage, appLoadedAt, isLoading }: PowerMeterProps) {
+export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: PowerMeterProps) {
   const totalWatts = usage?.total_watts ?? 0;
   const [nowMs, setNowMs] = useState(Date.now());
+  const previousDayWasteKwh = wasteSummary?.previous_day.kwh ?? 0;
 
   useEffect(() => {
     const timerId = window.setInterval(() => setNowMs(Date.now()), 60_000);
@@ -155,13 +157,18 @@ export function PowerMeter({ usage, appLoadedAt, isLoading }: PowerMeterProps) {
       </div>
 
       <div className="mt-5 alert-card border-accent-light/20 bg-accent-light/6 px-5 py-4">
-        <p className="panel-label text-accent-light/80">Estimate</p>
+        <p className="panel-label text-accent-light/80">After-Hours Waste</p>
         {isLoading ? (
           <div className="mt-2.5 h-8 w-52 animate-pulse rounded-lg bg-accent-light/10" />
         ) : (
-          <p className="font-data glow-light-text mt-1.5 text-xl font-semibold text-accent-light">
-            {estimatedKwh.toFixed(4)} kWh used today
-          </p>
+          <div className="mt-1.5 space-y-1">
+            <p className="font-data glow-light-text text-xl font-semibold text-accent-light">
+              {previousDayWasteKwh.toFixed(4)} kWh yesterday
+            </p>
+            <p className="text-xs text-text-secondary">
+              {estimatedKwh.toFixed(4)} kWh estimated since dashboard opened
+            </p>
+          </div>
         )}
       </div>
     </section>

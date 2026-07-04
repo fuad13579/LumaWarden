@@ -33,4 +33,26 @@ export type Snapshot = {
   alerts: Alert[];
 };
 
+export type WasteDaySummary = {
+  date: string;
+  watt_hours: number;
+  kwh: number;
+  rooms: Record<
+    Device["room"],
+    {
+      watt_hours: number;
+      devices: Record<string, number>;
+    }
+  >;
+};
+
+export type WasteSummary = {
+  office_hours: {
+    start_hour: number;
+    end_hour: number;
+  };
+  previous_day: WasteDaySummary;
+  today: WasteDaySummary;
+};
+
 export type ConnectionState = "connected" | "reconnecting" | "polling";

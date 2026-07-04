@@ -103,6 +103,43 @@ Example response from `GET /api/snapshot`:
 - After-hours alert: triggered outside 9 AM-5 PM if any device is ON.
 - Long-running room alert: triggered if all 5 devices in a room are ON for more than 2 hours.
 
+## Discord Bot
+
+The bot is in `bot/`. It reads the same backend APIs as the dashboard and does not create its own random device data.
+
+Features:
+
+- `!status` - live office-wide status
+- `!room <name>` - room status, such as `!room work1`
+- `!usage` - live wattage and today's tracked after-hours waste
+- `!summary` - previous day's after-hours wasted energy
+- automatic after-hours alarm messages in a configured Discord channel
+- premade response personalities: `warden`, `boss`, and `minimal`
+
+Setup:
+
+```powershell
+cd bot
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+Environment variables:
+
+```powershell
+$env:DISCORD_TOKEN="your_bot_token"
+$env:DISCORD_CHANNEL_ID="123456789012345678"
+$env:LUMAWARDEN_API_BASE="http://127.0.0.1:8000"
+$env:BOT_PERSONALITY="warden"
+```
+
+Run:
+
+```powershell
+python bot.py
+```
+
 ## Integration Notes
 
 - The frontend must read live state from the backend using REST and WebSocket.

@@ -87,6 +87,21 @@ class StoreTests(unittest.TestCase):
         self.assertEqual(self.store.get_devices()[0]["status"], "off")
         self.assertIsInstance(self.store.get_alerts(), list)
 
+    def test_get_waste_summary_accumulates_previous_day_after_hours_energy(self):
+        self.store.set_device_status("drawing_fan_1", "on")
+
+        device = next(device for device in self.store._DEVICES if device["id"] == "drawing_fan_1")
+        start = datetime(2026, 7, 3, 18, 0, 0)
+        device["last_changed"] = start.isoformat()
+        self.store._ACCOUNTED_AT["drawing_fan_1"] = start
+
+        summary = self.store.get_waste_summary(now=datetime(2026, 7, 4, 8, 0, 0))
+
+        self.assertEqual(summary["previous_day"]["date"], "2026-07-03")
+        self.assertEqual(summary["previous_day"]["watt_hours"], 360.0)
+        self.assertEqual(summary["previous_day"]["rooms"]["Drawing Room"]["devices"]["drawing_fan_1"], 360.0)
+        self.assertEqual(summary["today"]["watt_hours"], 480.0)
+
 
 if __name__ == "__main__":
     unittest.main()

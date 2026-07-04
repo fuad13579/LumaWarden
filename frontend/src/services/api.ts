@@ -1,4 +1,4 @@
-import type { Alert, Device, Snapshot, Usage } from "../types/device";
+import type { Alert, Device, Snapshot, Usage, WasteSummary } from "../types/device";
 
 const DEFAULT_API_BASE_URL = "http://localhost:8000";
 
@@ -43,6 +43,10 @@ export function getUsage(): Promise<Result<Usage>> {
 
 export function getAlerts(): Promise<Result<Alert[]>> {
   return getJson<Alert[]>("/api/alerts");
+}
+
+export function getSummary(): Promise<Result<WasteSummary>> {
+  return getJson<WasteSummary>("/api/summary");
 }
 
 export function getApiBaseUrl(): string {

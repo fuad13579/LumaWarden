@@ -25,6 +25,7 @@ class MainAppTests(unittest.TestCase):
                 self.assertEqual(len(client.get("/api/devices").json()), 15)
                 self.assertEqual(client.get("/api/usage").json()["total_watts"], 0)
                 self.assertEqual(client.get("/api/alerts").json(), [])
+                self.assertIn("previous_day", client.get("/api/summary").json())
                 self.assertEqual(client.get("/health").json(), {"status": "ok"})
 
     def test_websocket_receives_initial_snapshot(self):

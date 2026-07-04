@@ -9,6 +9,7 @@ FastAPI backend for LumaWarden. This service is the single source of truth for t
 - Push live dashboard updates through WebSocket.
 - Calculate total and per-room power usage.
 - Calculate active alerts from the current device snapshot.
+- Track after-hours wasted energy for dashboard and Discord summaries.
 - Run a background simulator that changes device states over time.
 
 ## Office Model
@@ -139,6 +140,61 @@ Returns current total and per-room power usage.
 ### `GET /api/alerts`
 
 Returns active alerts calculated from the current device state.
+
+### `GET /api/summary`
+
+Returns after-hours energy waste tracked by the backend.
+
+```json
+{
+  "office_hours": {
+    "start_hour": 9,
+    "end_hour": 17
+  },
+  "previous_day": {
+    "date": "2026-07-03",
+    "watt_hours": 360.0,
+    "kwh": 0.36,
+    "rooms": {
+      "Drawing Room": {
+        "watt_hours": 360.0,
+        "devices": {
+          "drawing_fan_1": 360.0
+        }
+      },
+      "Work Room 1": {
+        "watt_hours": 0,
+        "devices": {}
+      },
+      "Work Room 2": {
+        "watt_hours": 0,
+        "devices": {}
+      }
+    }
+  },
+  "today": {
+    "date": "2026-07-04",
+    "watt_hours": 0,
+    "kwh": 0,
+    "rooms": {
+      "Drawing Room": {
+        "watt_hours": 0,
+        "devices": {}
+      },
+      "Work Room 1": {
+        "watt_hours": 0,
+        "devices": {}
+      },
+      "Work Room 2": {
+        "watt_hours": 0,
+        "devices": {}
+      }
+    }
+  }
+}
+```
+
+The summary is in-memory, like device state, so it resets when the backend restarts.
 
 ## WebSocket
 
