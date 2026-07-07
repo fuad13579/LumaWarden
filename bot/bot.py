@@ -1,4 +1,9 @@
-"""Discord bot entry point for LumaWarden."""
+"""Discord bot entry point for LumaWarden.
+
+The bot is intentionally thin: it does not simulate devices or store its own
+copy of office state. Instead, it treats the FastAPI backend as the single
+source of truth and turns backend JSON into friendly Discord responses.
+"""
 
 from __future__ import annotations
 
@@ -29,7 +34,11 @@ DEFAULT_ALERT_INTERVAL_SECONDS = 300
 
 
 class BackendClient:
-	"""Small async wrapper around the LumaWarden REST API."""
+	"""Small async wrapper around the LumaWarden REST API.
+
+	The Discord bot uses blocking urllib underneath, but wraps it in
+	`asyncio.to_thread` so Discord commands remain responsive.
+	"""
 
 	def __init__(self, base_url: str) -> None:
 		self.base_url = base_url.rstrip("/")
@@ -46,6 +55,8 @@ class BackendClient:
 
 	@staticmethod
 	def _blocking_get_json(url: str) -> dict[str, Any]:
+		# The bot only needs plain JSON requests. A tiny wrapper keeps the code
+		# dependency-light and easy to deploy.
 		request = Request(url, headers={"Accept": "application/json"})
 		with urlopen(request, timeout=5) as response:
 			return json.loads(response.read().decode("utf-8"))
@@ -53,6 +64,9 @@ class BackendClient:
 
 class LumaWardenCog(commands.Cog):
 	def __init__(self, bot: commands.Bot, api: BackendClient, channel_id: int | None, personality_name: str) -> None:
+		# The cog owns all office-related commands plus the alert loop. That keeps
+		# the bot's behavior modular and makes it easy to switch personalities in a
+		# live demo.
 		self.bot = bot
 		self.api = api
 		self.channel_id = channel_id
@@ -60,6 +74,8 @@ class LumaWardenCog(commands.Cog):
 		self.last_alarm_signature: str | None = None
 
 		interval = int(os.getenv("AUTO_ALERT_INTERVAL_SECONDS", str(DEFAULT_ALERT_INTERVAL_SECONDS)))
+		# The alert loop is configurable so the demo can be slowed down or sped up
+		# without changing code.
 		self.after_hours_alarm_loop.change_interval(seconds=max(10, interval))
 		self.after_hours_alarm_loop.start()
 
@@ -67,6 +83,8 @@ class LumaWardenCog(commands.Cog):
 		self.after_hours_alarm_loop.cancel()
 
 	async def _safe_snapshot(self, ctx: commands.Context | None = None) -> dict[str, Any] | None:
+		# These helpers centralize error handling so command bodies stay focused on
+		# presentation instead of transport concerns.
 		try:
 			return await self.api.get_snapshot()
 		except (URLError, TimeoutError, OSError) as exc:
@@ -77,6 +95,8 @@ class LumaWardenCog(commands.Cog):
 			return None
 
 	async def _safe_summary(self, ctx: commands.Context | None = None) -> dict[str, Any] | None:
+		# The summary endpoint powers both usage reporting and the after-hours
+		# summary command.
 		try:
 			return await self.api.get_summary()
 		except (URLError, TimeoutError, OSError) as exc:
@@ -88,7 +108,15 @@ class LumaWardenCog(commands.Cog):
 
 	@commands.command(name="status")
 	async def status_command(self, ctx: commands.Context, *, room_name: str = "") -> None:
-		"""Show office-wide status, or a room status when a room name is provided."""
+		"""Show office-wide status, or a room status when a room name is provided.
+
+		Examples:
+		- `!status`
+		- `!status Work Room 1`
+
+		The second form is just a convenience wrapper around the same backend
+		snapshot.
+		"""
 
 		snapshot = await self._safe_snapshot(ctx)
 		if snapshot is None:
@@ -107,7 +135,11 @@ class LumaWardenCog(commands.Cog):
 
 	@commands.command(name="room")
 	async def room_command(self, ctx: commands.Context, *, room_name: str) -> None:
-		"""Show status for one room."""
+		"""Show status for one room.
+
+		This is mostly useful for a quick targeted check during the demo, e.g.
+		`!room work1`.
+		"""
 
 		room = normalize_room_name(room_name)
 		if room is None:
@@ -121,7 +153,11 @@ class LumaWardenCog(commands.Cog):
 
 	@commands.command(name="usage")
 	async def usage_command(self, ctx: commands.Context) -> None:
-		"""Show live power usage."""
+		"""Show live power usage.
+
+		The bot combines live usage with the backend summary so the response reads
+		naturally instead of exposing raw API field names.
+		"""
 
 		snapshot = await self._safe_snapshot(ctx)
 		summary = await self._safe_summary(ctx)
@@ -131,7 +167,11 @@ class LumaWardenCog(commands.Cog):
 
 	@commands.command(name="summary")
 	async def summary_command(self, ctx: commands.Context) -> None:
-		"""Show previous day's after-hours wasted energy."""
+		"""Show previous day's after-hours wasted energy.
+
+		This command is a good example of why the bot reads the backend summary
+		through the same interface as the dashboard.
+		"""
 
 		summary = await self._safe_summary(ctx)
 		if summary is None:
@@ -147,7 +187,11 @@ class LumaWardenCog(commands.Cog):
 
 	@commands.command(name="persona")
 	async def persona_command(self, ctx: commands.Context, name: str) -> None:
-		"""Switch bot response style for the current process."""
+		"""Switch bot response style for the current process.
+
+		This is a demo convenience feature: it lets the operator change the tone of
+		bot replies without redeploying or editing config files.
+		"""
 
 		normalized = name.strip().lower()
 		if normalized not in PERSONALITIES:
@@ -159,6 +203,8 @@ class LumaWardenCog(commands.Cog):
 
 	@tasks.loop(seconds=DEFAULT_ALERT_INTERVAL_SECONDS)
 	async def after_hours_alarm_loop(self) -> None:
+		# This loop does not generate alerts on its own. It simply polls the backend
+		# and posts a message when the backend's active after-hours signature changes.
 		await self.bot.wait_until_ready()
 		if self.channel_id is None:
 			return
@@ -185,6 +231,9 @@ class LumaWardenCog(commands.Cog):
 
 
 async def main() -> None:
+	# `main()` wires the bot to environment variables, then hands control to
+	# discord.py. The runtime configuration stays outside the code so deployment
+	# remains simple.
 	logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(name)s:%(message)s")
 
 	token = os.getenv("DISCORD_TOKEN")

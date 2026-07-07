@@ -31,7 +31,7 @@ npm install
 Start the Vite dev server:
 
 ```bash
-npm run dev
+npm.cmd run dev
 ```
 
 Open:
@@ -40,7 +40,9 @@ Open:
 http://localhost:5173
 ```
 
-The backend CORS policy already allows `localhost:5173`.
+For local development the backend CORS policy allows `localhost:5173`. For deployed frontends, add the deployed domain to the backend `ALLOWED_ORIGINS` environment variable.
+
+If PowerShell blocks `npm`, use `npm.cmd` instead of `npm`.
 
 ## Backend URL Override
 
@@ -53,14 +55,20 @@ http://localhost:8000
 To point the dashboard at a different backend:
 
 ```bash
-VITE_API_BASE_URL=http://localhost:9000 npm run dev
+VITE_API_BASE_URL=http://localhost:9000 npm.cmd run dev
 ```
 
 Windows PowerShell:
 
 ```powershell
 $env:VITE_API_BASE_URL="http://localhost:9000"
-npm run dev
+npm.cmd run dev
+```
+
+In production, point `VITE_API_BASE_URL` at the deployed backend, for example:
+
+```text
+https://lumawarden.onrender.com
 ```
 
 ## Data Flow
@@ -68,6 +76,7 @@ npm run dev
 - Initial and fallback reads use `GET /api/snapshot`.
 - Live updates use `WebSocket /ws`.
 - Device panels, power meters, office layout, and alerts all render from backend snapshots.
+- The `Today's kWh` value in the header and the usage summary cards are backend-backed.
 - If WebSocket disconnects, the dashboard falls back to polling and retries the WebSocket connection.
 
 ## Validation

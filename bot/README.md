@@ -56,6 +56,8 @@ BOT_PERSONALITY=warden
 AUTO_ALERT_INTERVAL_SECONDS=300
 ```
 
+The bot reads the backend REST API at `LUMAWARDEN_API_BASE` and never generates its own random room or device state.
+
 Available personalities:
 
 - `warden` - warm, watchful, demo-friendly
@@ -77,3 +79,15 @@ Then run the bot:
 ```bash
 python bot.py
 ```
+
+## Data Flow
+
+- `!status` and `!room` call the backend snapshot API.
+- `!usage` reads both the live usage payload and the backend summary payload.
+- `!summary` reads the backend summary payload.
+- The after-hours alarm loop polls the backend on a timer and posts only when the active alert signature changes.
+
+## Submission Notes
+
+- The bot must be deployed as a long-running process, not as a serverless function.
+- Use the same backend URL for the dashboard and bot so both interfaces reflect one shared source of truth.

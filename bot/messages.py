@@ -1,4 +1,9 @@
-"""Rule-based response personalities for the LumaWarden Discord bot."""
+"""Rule-based response personalities for the LumaWarden Discord bot.
+
+These helpers take raw backend snapshots and turn them into human-readable
+Discord messages. The formatting stays intentionally simple and deterministic so
+the bot sounds friendly without inventing any office state of its own.
+"""
 
 from __future__ import annotations
 
@@ -7,6 +12,8 @@ from dataclasses import dataclass
 from typing import Any
 
 ROOM_ALIASES = {
+	# The aliases let demo operators use short room names while still mapping to
+	# the canonical room labels used by the backend.
 	"drawing": "Drawing Room",
 	"drawing room": "Drawing Room",
 	"guest": "Drawing Room",
@@ -26,6 +33,8 @@ ROOM_ALIASES = {
 
 @dataclass(frozen=True)
 class Personality:
+	# Each personality is just a bundle of phrasing choices. That makes the bot
+	# easy to re-skin without changing any business logic.
 	name: str
 	status_intro: str
 	room_intro: str
@@ -36,6 +45,8 @@ class Personality:
 
 
 PERSONALITIES = {
+	# The bot can sound a little different while still reporting the exact same
+	# underlying office data.
 	"warden": Personality(
 		name="warden",
 		status_intro="LumaWarden sweep complete.",
@@ -67,17 +78,20 @@ PERSONALITIES = {
 
 
 def normalize_room_name(value: str) -> str | None:
+	"""Normalize user input to a canonical room name."""
 	normalized = " ".join(value.strip().lower().split())
 	return ROOM_ALIASES.get(normalized)
 
 
 def get_personality(name: str | None) -> Personality:
+	"""Return the requested personality or fall back to the default one."""
 	if not name:
 		return PERSONALITIES["warden"]
 	return PERSONALITIES.get(name.strip().lower(), PERSONALITIES["warden"])
 
 
 def _devices_by_room(devices: list[dict[str, Any]]) -> dict[str, list[dict[str, Any]]]:
+	"""Group a flat device list into room buckets for readable output."""
 	grouped: dict[str, list[dict[str, Any]]] = defaultdict(list)
 	for device in devices:
 		grouped[str(device.get("room", "Unknown"))].append(device)
@@ -85,10 +99,12 @@ def _devices_by_room(devices: list[dict[str, Any]]) -> dict[str, list[dict[str, 
 
 
 def _on_devices(devices: list[dict[str, Any]]) -> list[dict[str, Any]]:
+	"""Return only the devices that are currently ON."""
 	return [device for device in devices if str(device.get("status", "")).lower() == "on"]
 
 
 def _room_line(room: str, devices: list[dict[str, Any]]) -> str:
+	"""Render a single human-readable room summary line."""
 	on_devices = _on_devices(devices)
 	counts = Counter(str(device.get("type", "device")) for device in on_devices)
 	total_watts = sum(int(device.get("power_watts", 0)) for device in devices)
@@ -106,12 +122,19 @@ def _room_line(room: str, devices: list[dict[str, Any]]) -> str:
 
 
 def _device_list(devices: list[dict[str, Any]]) -> str:
+	"""Render a comma-separated list of device names for Discord."""
 	if not devices:
 		return "No devices are ON."
 	return ", ".join(str(device.get("name", device.get("id", "Device"))) for device in devices)
 
 
 def format_status(snapshot: dict[str, Any], personality: Personality) -> str:
+	"""Format an office-wide status response.
+
+	Example output:
+	- Drawing Room: 1 fan ON, 2 lights ON, 90W
+	- Work Room 1: all off, 0W
+	"""
 	devices = list(snapshot.get("devices", []))
 	usage = snapshot.get("usage", {})
 	grouped = _devices_by_room(devices)
@@ -134,6 +157,7 @@ def format_status(snapshot: dict[str, Any], personality: Personality) -> str:
 
 
 def format_room(snapshot: dict[str, Any], room: str, personality: Personality) -> str:
+	"""Format a focused response for one room only."""
 	devices = [device for device in snapshot.get("devices", []) if device.get("room") == room]
 	if not devices:
 		return f"I could not find `{room}` in the office map."
@@ -148,6 +172,11 @@ def format_room(snapshot: dict[str, Any], room: str, personality: Personality) -
 
 
 def format_usage(snapshot: dict[str, Any], summary: dict[str, Any], personality: Personality) -> str:
+	"""Format a live power usage response.
+
+	This combines instantaneous wattage with the backend-tracked summary so the
+	reply feels complete without being verbose.
+	"""
 	usage = snapshot.get("usage", {})
 	rooms = usage.get("rooms", {})
 	today = summary.get("today", {})
@@ -164,6 +193,7 @@ def format_usage(snapshot: dict[str, Any], summary: dict[str, Any], personality:
 
 
 def format_summary(summary: dict[str, Any], personality: Personality) -> str:
+	"""Format yesterday's after-hours waste summary."""
 	previous_day = summary.get("previous_day", {})
 	rooms = previous_day.get("rooms", {})
 	room_rows = []
@@ -191,6 +221,11 @@ def format_summary(summary: dict[str, Any], personality: Personality) -> str:
 
 
 def format_alarm(snapshot: dict[str, Any], personality: Personality) -> tuple[str | None, str]:
+	"""Format an alert post for Discord.
+
+	The signature allows the bot to avoid reposting the same alert repeatedly when
+	the backend still reports the same devices as active.
+	"""
 	alert_device_ids = {
 		alert.get("device_id")
 		for alert in snapshot.get("alerts", [])

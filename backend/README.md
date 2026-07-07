@@ -1,6 +1,21 @@
 # LumaWarden Backend
 
-FastAPI backend for LumaWarden. This service is the single source of truth for the web dashboard and Discord bot.
+FastAPI backend for LumaWarden. This service is the single source of truth for
+the web dashboard and Discord bot.
+
+## Why this backend exists
+
+The hackathon problem statement asks for one shared backend that both the
+dashboard and the bot use. That means this service is responsible for:
+
+- storing the simulated office device state in memory
+- exposing REST APIs for the dashboard and the bot
+- pushing live updates to the browser through WebSocket
+- calculating power usage, summaries, and alerts
+- running the background simulator that keeps the demo active
+
+The frontend and bot never simulate their own devices. They only read the data
+returned by this backend.
 
 ## Responsibilities
 
@@ -20,7 +35,9 @@ The backend uses the fixed 15-device office setup:
 - Work Room 1: 2 fans, 3 lights
 - Work Room 2: 2 fans, 3 lights
 
-The problem statement mentions 18 devices in a few places, but this implementation uses 15 devices based on the fixed room setup.
+The problem statement mentions 18 devices in a few places, but this
+implementation uses 15 devices because the room breakdown is fixed and
+self-consistent.
 
 ## Power Rules
 
@@ -59,6 +76,12 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
+Why this separate environment exists:
+
+- it keeps the backend dependencies isolated from the frontend
+- it matches the deploy setup on hosts like Render
+- it avoids confusion between Python and Node package managers
+
 ## Run
 
 From the repository root:
@@ -66,6 +89,8 @@ From the repository root:
 ```bash
 uvicorn backend.main:app --reload
 ```
+
+Use this command during development so changes reload automatically.
 
 Default URLs:
 
@@ -79,15 +104,27 @@ Default URLs:
 
 Returns backend health.
 
+Example:
+
 ```json
 {
   "status": "ok"
 }
 ```
 
+Use this as a deployment smoke test.
+
 ### `GET /api/snapshot`
 
 Returns the full live backend snapshot.
+
+This is the dashboard's main packet because it bundles:
+
+- device list
+- current power usage
+- active alerts
+
+Example:
 
 ```json
 {
@@ -108,6 +145,8 @@ Returns the full live backend snapshot.
 
 Returns all 15 devices.
 
+Use this when you want the raw inventory without the usage or alert summary.
+
 Each device has this shape:
 
 ```json
@@ -126,6 +165,11 @@ Each device has this shape:
 
 Returns current total and per-room power usage.
 
+This endpoint is intentionally compact so the dashboard can render KPI cards
+and charts without requesting the full snapshot every time.
+
+Example:
+
 ```json
 {
   "total_watts": 75,
@@ -141,9 +185,27 @@ Returns current total and per-room power usage.
 
 Returns active alerts calculated from the current device state.
 
+The backend recalculates alerts on demand so the list always reflects the live
+device snapshot instead of a cached copy.
+
 ### `GET /api/summary`
 
-Returns after-hours energy waste tracked by the backend.
+Returns after-hours energy waste tracked by the backend, plus the dashboard
+session estimate for the current page load.
+
+Optional query parameter:
+
+- `dashboard_loaded_at_ms` - timestamp in milliseconds used to calculate the
+  session estimate that the dashboard shows in the Power card
+
+Why the query parameter exists:
+
+- the backend can calculate the "since dashboard opened" metric
+- the frontend stays display-only
+- the result is consistent for both the dashboard and any future consumer that
+  wants the same value
+
+Example:
 
 ```json
 {
@@ -190,11 +252,42 @@ Returns after-hours energy waste tracked by the backend.
         "devices": {}
       }
     }
-  }
+  },
+  "today_usage": {
+    "date": "2026-07-04",
+    "watt_hours": 0,
+    "kwh": 0,
+    "rooms": {
+      "Drawing Room": {
+        "watt_hours": 0,
+        "devices": {}
+      },
+      "Work Room 1": {
+        "watt_hours": 0,
+        "devices": {}
+      },
+      "Work Room 2": {
+        "watt_hours": 0,
+        "devices": {}
+      }
+    }
+  },
+  "dashboard_estimate_kwh": 0
 }
 ```
 
-The summary is in-memory, like device state, so it resets when the backend restarts.
+The summary is in-memory, like device state, so it resets when the backend
+restarts. That is acceptable here because the project is a simulation demo, not
+a persistent production energy platform.
+
+### Why there are two kWh values
+
+- `today_usage.kwh` is the backend's current-day ON-time energy total.
+- `dashboard_estimate_kwh` is the session estimate shown in the UI for
+  "since dashboard opened."
+
+Both are backend-calculated so the frontend only displays values instead of
+duplicating accounting logic.
 
 ## WebSocket
 
@@ -210,6 +303,12 @@ Behavior:
 - Sends an updated snapshot whenever the simulator changes device state.
 - Snapshot shape matches `GET /api/snapshot`.
 
+Why WebSocket is used:
+
+- it gives the dashboard instant updates without page refreshes
+- it reduces the need for repeated polling while the backend is healthy
+- it makes the demo feel live even though the devices are simulated
+
 ## Simulator
 
 The simulator runs automatically when the FastAPI app starts.
@@ -220,21 +319,31 @@ The simulator runs automatically when the FastAPI app starts.
 - Recalculates usage and alerts through the shared store.
 - Broadcasts the updated snapshot to connected WebSocket clients.
 
+Why the simulator is in the backend:
+
+- the backend must own the state transitions so the bot and UI never diverge
+- the simulator is a deterministic source of demo activity, not a separate app
+- keeping it here makes deployment and debugging much simpler
+
 ## Alert Rules
 
 ### After-Hours Alert
 
 Office hours are 9 AM through 5 PM.
 
-If any device is ON before 9 AM or at/after 5 PM, the backend creates a device-level alert.
+If any device is ON before 9 AM or at/after 5 PM, the backend creates a
+device-level alert.
 
 ### Long-Running Room Alert
 
-If all 5 devices in a room are ON and each has been ON continuously for more than 2 hours, the backend creates a room-level alert.
+If all 5 devices in a room are ON and each has been ON continuously for more
+than 2 hours, the backend creates a room-level alert.
 
-## Integration Rules
+This is a simulation heuristic for the hackathon demo. In a real deployment,
+occupancy signals would make this rule more reliable.
 
-- The frontend must read data from REST APIs and live WebSocket snapshots.
-- The Discord bot must call REST APIs.
-- Frontend and bot must not generate separate random device data.
-- Backend state is in memory, so device state resets when the server restarts.
+Why the alert rules are written this way:
+
+- after-hours alerts are easy to understand and show obvious waste
+- room-wide alerts represent a broader inefficiency than a single device
+- both rules are simple enough to explain in a short judging walkthrough

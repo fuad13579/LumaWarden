@@ -13,7 +13,6 @@ import type { Usage, WasteSummary } from "../types/device";
 type PowerMeterProps = {
   usage: Usage | null;
   wasteSummary: WasteSummary | null;
-  appLoadedAt: number;
   isLoading: boolean;
 };
 
@@ -58,11 +57,16 @@ function PowerTooltip({
   );
 }
 
-export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: PowerMeterProps) {
+export function PowerMeter({ usage, wasteSummary, isLoading }: PowerMeterProps) {
+  // This panel combines three related ideas:
+  // - current office wattage
+  // - a per-room bar chart
+  // - backend-backed energy summaries
   const totalWatts = usage?.total_watts ?? 0;
   const [nowMs, setNowMs] = useState(Date.now());
   const [viewportWidth, setViewportWidth] = useState(() => window.innerWidth);
   const previousDayWasteKwh = wasteSummary?.previous_day.kwh ?? 0;
+  const estimatedKwh = wasteSummary?.dashboard_estimate_kwh ?? 0;
 
   useEffect(() => {
     const timerId = window.setInterval(() => setNowMs(Date.now()), 60_000);
@@ -86,11 +90,6 @@ export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: Powe
     [usage],
   );
 
-  const estimatedKwh = useMemo(() => {
-    const hoursSinceLoaded = (nowMs - appLoadedAt) / 3_600_000;
-    return (totalWatts / 1000) * hoursSinceLoaded;
-  }, [appLoadedAt, nowMs, totalWatts]);
-
   const formatRoomLabel = (room: string): string => {
     if (viewportWidth < 640 && room in compactRoomLabels) {
       return compactRoomLabels[room as keyof typeof compactRoomLabels];
@@ -103,6 +102,8 @@ export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: Powe
     <section aria-label="Power meter" className="glass-card min-w-0 p-5 sm:p-6">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div>
+          {/* The heading explains that this is live power, not a historical
+              report, so judges understand the distinction immediately. */}
           <p className="panel-label">Energy Monitor</p>
           <h2 className="panel-title mt-1">Power</h2>
           <p className="mt-1.5 text-sm text-text-secondary">Live whole-office draw</p>
@@ -123,6 +124,8 @@ export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: Powe
 
       <div className="mt-6 h-44 sm:h-52">
         {isLoading ? (
+          // Skeleton bars preserve the panel layout while the first snapshot is
+          // loading from the backend.
           <div className="surface-nested flex h-full items-end gap-4 px-5 py-5">
             {[44, 68, 52].map((height) => (
               <div
@@ -134,6 +137,8 @@ export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: Powe
             ))}
           </div>
         ) : (
+          // The chart is intentionally small and uncluttered: it should support
+          // the dashboard, not dominate the screen.
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData} margin={{ top: 10, right: 8, left: -12, bottom: 0 }}>
               <CartesianGrid stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" vertical={false} />
@@ -168,6 +173,8 @@ export function PowerMeter({ usage, wasteSummary, appLoadedAt, isLoading }: Powe
       </div>
 
       <div className="mt-5 alert-card border-accent-light/20 bg-accent-light/6 px-4 py-4 sm:px-5">
+        {/* This summary is backend-backed. The frontend simply renders the
+            numbers returned by the summary endpoint. */}
         <p className="panel-label text-accent-light/80">After-Hours Waste</p>
         {isLoading ? (
           <div className="mt-2.5 h-8 w-52 animate-pulse rounded-lg bg-accent-light/10" />

@@ -1,19 +1,24 @@
 import { Zap, Activity, Sparkles, AlertTriangle } from "lucide-react";
-import type { Alert, ConnectionState, Usage, Device } from "../types/device";
+import type { Alert, ConnectionState, Usage, Device, WasteSummary } from "../types/device";
 
 type TopHeaderProps = {
   connectionState: ConnectionState;
   devices: Device[];
   usage: Usage | null;
   alerts: Alert[];
-  appLoadedAt: number;
+  wasteSummary: WasteSummary | null;
 };
 
-export function TopHeader({ connectionState, devices, usage, alerts, appLoadedAt }: TopHeaderProps) {
+export function TopHeader({ connectionState, devices, usage, alerts, wasteSummary }: TopHeaderProps) {
+  // This header is the executive summary of the entire dashboard. It combines
+  // the live stream state with the most important office metrics so the viewer
+  // can understand the system before scrolling into the detailed panels.
   const activeDevices = devices.filter((d) => d.status === "on").length;
   const totalWatts = usage?.total_watts ?? 0;
-  const estimatedKwh = ((totalWatts / 1000) * (Math.max(Date.now() - appLoadedAt, 0) / 3_600_000)).toFixed(2);
+  const todaysKwh = wasteSummary?.today_usage.kwh ?? 0;
 
+  // Each KPI is a read-only card. The color/icon pair is chosen to make the
+  // metric type obvious at a glance without requiring the user to read a label.
   const kpiCards = [
     {
       label: "Total Power",
@@ -29,7 +34,7 @@ export function TopHeader({ connectionState, devices, usage, alerts, appLoadedAt
     },
     {
       label: "Today's kWh",
-      value: `${estimatedKwh}`,
+      value: `${todaysKwh.toFixed(2)}`,
       icon: Sparkles,
       accent: "text-text-primary",
     },
@@ -61,12 +66,16 @@ export function TopHeader({ connectionState, devices, usage, alerts, appLoadedAt
 
       <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <div className="flex min-w-0 flex-wrap gap-3">
+          {/* Connection state is shown as a badge instead of a button so the UI
+              does not suggest that the status can be toggled from here. */}
           <div className="badge-premium min-w-0 gap-2 px-3 py-2 text-text-secondary">
             <span className="inline-flex h-2.5 w-2.5 rounded-full bg-accent-power" />
             <span className="truncate">Stream: {connectionState}</span>
           </div>
         </div>
 
+        {/* The KPI grid stays compact so the title block remains readable even
+            on medium-width screens. */}
         <div className="grid w-full min-w-0 gap-3 sm:grid-cols-2 xl:w-auto xl:min-w-0 xl:grid-cols-4">
           {kpiCards.map(({ label, value, icon: Icon, accent }) => (
             <div key={label} className="kpi-card relative min-w-0 overflow-hidden">

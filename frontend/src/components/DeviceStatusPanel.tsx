@@ -9,6 +9,8 @@ type DeviceStatusPanelProps = {
 const rooms = ["Drawing Room", "Work Room 1", "Work Room 2"] as const;
 
 function LoadingSkeleton() {
+  // The loading skeleton mirrors the eventual room layout so the panel does
+  // not jump when the backend snapshot arrives.
   return (
     <div className="grid gap-5 md:grid-cols-2 2xl:grid-cols-3">
       {rooms.map((room) => (
@@ -33,6 +35,8 @@ function LoadingSkeleton() {
 }
 
 export function DeviceStatusPanel({ devices }: DeviceStatusPanelProps) {
+  // The panel groups the flat device list by room so the 15-device office
+  // layout can be inspected one room at a time.
   const devicesByRoom = useMemo(
     () =>
       rooms.map((room) => ({
@@ -53,6 +57,8 @@ export function DeviceStatusPanel({ devices }: DeviceStatusPanelProps) {
   return (
     <section aria-label="Device status panel" className="grid min-w-0 gap-6 2xl:grid-cols-3">
       {devicesByRoom.map(({ room, devices: roomDevices }) => {
+        // "activeCount" gives a quick room-level summary without forcing the
+        // viewer to scan every device row.
         const activeCount = roomDevices.filter((device) => device.status === "on").length;
 
         return (
@@ -75,6 +81,8 @@ export function DeviceStatusPanel({ devices }: DeviceStatusPanelProps) {
 
             <div className="space-y-2.5">
               {roomDevices.map((device) => {
+                // Fan and light icons are used purely as visual shorthand. The
+                // real source of truth is still the backend device state.
                 const Icon = device.type === "fan" ? Fan : Lightbulb;
                 const isOn = device.status === "on";
 
