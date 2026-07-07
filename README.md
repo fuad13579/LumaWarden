@@ -1,8 +1,11 @@
 # LumaWarden
 
-LumaWarden is a FastAPI backend that acts as the single source of truth for the dashboard and Discord bot. It uses an in-memory simulator for a fixed office layout and exposes REST plus WebSocket endpoints for live reads.
+LumaWarden is a simulated smart-office monitoring system built for the hackathon problem statement. It has one shared FastAPI backend that acts as the single source of truth for:
 
-## Submission Snapshot
+- the React/Vite dashboard
+- the Discord bot
+- live device state, power usage, and alerts
+- a background simulator that produces realistic office activity
 
 - Frontend dashboard: React + Vite, reads live REST and WebSocket data from the backend.
 - Dashboard visualization: statement-style office floor plan with live light/fan indicators.
@@ -12,7 +15,9 @@ LumaWarden is a FastAPI backend that acts as the single source of truth for the 
 - Architecture diagram: [diagrams/lumawarden-architecture-diagram.drawio](diagrams/lumawarden-architecture-diagram.drawio) and [diagrams/architecture-diagram.png](diagrams/architecture-diagram.png).
 - Circuit docs: [diagrams/circuit-explanation.md](diagrams/circuit-explanation.md), [diagrams/pin-mapping.md](diagrams/pin-mapping.md), and [diagrams/wokwi-link.md](diagrams/wokwi-link.md).
 
-## Demo Flow
+- Drawing Room
+- Work Room 1
+- Work Room 2
 
 1. Start the backend.
 2. Start the frontend dashboard.
@@ -23,7 +28,8 @@ LumaWarden is a FastAPI backend that acts as the single source of truth for the 
 7. Show the Discord bot commands: `!status`, `!room work1`, `!usage`, and `!summary`.
 8. Point judges to the architecture and circuit docs above.
 
-## Judging Checklist
+- 2 fans
+- 3 lights
 
 - Live backend source of truth is used by both the dashboard and the bot.
 - Device states, room usage, and alerts update from the shared backend snapshot.
@@ -35,47 +41,82 @@ LumaWarden is a FastAPI backend that acts as the single source of truth for the 
 - The project documents the architecture diagram and circuit schematic.
 - Setup commands and environment variables are clearly documented below.
 
-## Problem Statement Alignment
+## Repository Layout
 
-- This repository uses the fixed 3-room, 15-device model implemented in the backend, frontend, bot, and tests.
-- The statement text also mentions 18 devices in places, which conflicts with the listed room breakdown.
-- The implementation keeps the shared backend state as the source of truth and does not add fake devices to reconcile that mismatch.
+- `backend/` — FastAPI app, in-memory store, simulator, alerts, and WebSocket stream
+- `frontend/` — React/Vite dashboard
+- `bot/` — Discord bot that reads the same backend APIs
+- `diagrams/` — architecture and circuit documentation
 
-## Backend Setup
+## What the project demonstrates
 
-From the repo root:
+- shared backend state for dashboard and bot
+- real-time dashboard updates through WebSocket
+- REST APIs for bot and dashboard reads
+- simulated device toggles every 5-10 seconds
+- power usage calculation
+- alert generation
+- representative circuit documentation for one room
+
+## Quick Start
+
+The services are started separately because each one has a different runtime
+role:
+
+- backend = shared state, simulator, REST, WebSocket
+- frontend = browser UI only
+- bot = Discord process that reads backend data
+
+That split is intentional. It keeps the backend as the only place where device
+state changes, which makes the demo architecture easy to explain and verify.
+
+### Backend
 
 ```powershell
 cd backend
 python -m venv .venv
-```
-
-Activate the virtual environment:
-
-- Windows:
-
-```powershell
 .venv\Scripts\activate
-```
-
-- macOS/Linux:
-
-```bash
-source .venv/bin/activate
-```
-
-Install dependencies:
-
-```powershell
 pip install -r requirements.txt
+uvicorn backend.main:app --reload
 ```
 
-## Run the Backend
-
-From the repo root:
+### Frontend
 
 ```powershell
-uvicorn backend.main:app --reload
+cd frontend
+npm install
+npm.cmd run dev
+```
+
+If PowerShell blocks `npm`, use `npm.cmd` as shown above.
+
+> The frontend is a browser app. It reads the backend and renders what it gets;
+> it does not decide device states or create alerts on its own.
+
+### Bot
+
+```powershell
+cd bot
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+python bot.py
+```
+
+> The bot is intentionally long-running because Discord bots keep a live
+> connection open. That is why it belongs on a worker-like host, not Vercel.
+
+## Required Environment Variables
+
+### Frontend
+
+- `VITE_API_BASE_URL` — backend URL in production, for example `https://lumawarden.onrender.com`
+
+Example:
+
+```powershell
+$env:VITE_API_BASE_URL="https://lumawarden.onrender.com"
+npm.cmd run dev
 ```
 
 ## URLs
@@ -139,10 +180,13 @@ Example response from `GET /api/snapshot`:
 }
 ```
 
-## Alert Rules
+- `DISCORD_TOKEN`
+- `DISCORD_CHANNEL_ID`
+- `LUMAWARDEN_API_BASE`
+- `BOT_PERSONALITY` — optional
+- `AUTO_ALERT_INTERVAL_SECONDS` — optional, defaults to `300`
 
-- After-hours alert: triggered outside 9 AM-5 PM if any device is ON.
-- Long-running room alert: triggered if all 5 devices in a room are ON for more than 2 hours.
+Example:
 
 ## After-Hours Waste Summary
 
@@ -161,44 +205,42 @@ Set `OFFICE_END_HOUR` to the current hour or earlier, then restart the backend t
 
 ## Discord Bot
 
-The bot is in `bot/`. It reads the same backend APIs as the dashboard and does not create its own random device data.
+### Backend
 
-Features:
+- `ALLOWED_ORIGINS` — optional comma-separated CORS allowlist for deployed frontend domains
 
-- `!status` - live office-wide status
-- `!status <name>` - room status shortcut, such as `!status Work Room 1`
-- `!room <name>` - room status, such as `!room work1`
-- `!usage` - live wattage and today's tracked after-hours waste
-- `!summary` - previous day's after-hours wasted energy
-- automatic after-hours alarm messages in a configured Discord channel
-- premade response personalities: `warden`, `boss`, and `minimal`
+## Documentation
 
-Setup:
+- `backend/README.md` — backend APIs, simulator, alert logic, and summary model
+- `frontend/README.md` — dashboard setup, runtime behavior, and backend dependency
+- `bot/README.md` — Discord bot setup and commands
+- `diagrams/circuit-explanation.md` — representative circuit notes
+- `diagrams/pin-mapping.md` — pin mapping for the Wokwi concept
+- `diagrams/wokwi-link.md` — simulation link notes
+- `diagrams/architecture-diagram.png` — high-level system diagram
 
-```powershell
-cd bot
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-```
+## What reviewers should notice first
 
-Environment variables:
+1. The backend is the only writer of device state.
+2. The frontend never invents its own devices or alerts.
+3. The bot uses the same backend APIs as the dashboard.
+4. The simulator is in-memory, which is enough for a hackathon demo.
 
-```powershell
-$env:DISCORD_TOKEN="your_bot_token"
-$env:DISCORD_CHANNEL_ID="your_channel_id"
-$env:LUMAWARDEN_API_BASE="http://127.0.0.1:8000"
-$env:BOT_PERSONALITY="warden"
-```
+## Validation
 
-Run:
+The expected checks for submission are:
 
-```powershell
-python bot.py
-```
+- backend starts with `uvicorn`
+- frontend builds with `npm run build`
+- dashboard connects to the backend without CORS issues
+- WebSocket pushes live updates
+- Discord bot reads the same backend snapshot
+- docs explain the 15-device fixed layout and the simulation approach
 
-## Integration Notes
+## Problem Statement Fit
 
-- The frontend must read live state from the backend using REST and WebSocket.
-- The Discord bot must call the backend REST APIs.
-- Neither the frontend nor the bot should generate separate random device data.
+- no physical hardware is required
+- device data is simulated
+- the dashboard and bot share one backend
+- the dashboard supports live telemetry and alerts without refresh
+- the circuit deliverable is represented with a practical one-room schematic concept

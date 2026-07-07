@@ -17,6 +17,9 @@ type DevicePoint = {
   y: number;
 };
 
+// These coordinates map each simulated device to the fixed top-view floor plan.
+// The values are hand-tuned so the visual layout matches the office description
+// from the problem statement without requiring a separate drawing tool at run time.
 const devicePoints: DevicePoint[] = [
   { id: "drawing_light_1", room: "Drawing Room", type: "light", x: 114, y: 82 },
   { id: "drawing_light_2", room: "Drawing Room", type: "light", x: 306, y: 82 },
@@ -119,6 +122,8 @@ function LightDevice({ point, device }: { point: DevicePoint; device?: Device })
 }
 
 export function OfficeLayout({ devices }: OfficeLayoutProps) {
+  // Convert the flat device list into a lookup table so each SVG marker can
+  // read its current status in constant time.
   const devicesById = useMemo(
     () => new Map(devices.map((device) => [device.id, device])),
     [devices],
@@ -128,6 +133,9 @@ export function OfficeLayout({ devices }: OfficeLayoutProps) {
     <section className="glass-card p-5 sm:p-6" aria-label="Office floor plan">
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
+          {/* This section is intentionally a visual story, not a control panel:
+              it helps the reviewer understand how device states map to the
+              office layout. */}
           <p className="panel-label">Floor Visualization</p>
           <h2 className="panel-title mt-1">Statement Office Layout</h2>
           <p className="mt-1.5 text-sm text-text-secondary">

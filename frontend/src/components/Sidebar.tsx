@@ -5,6 +5,8 @@ export function Sidebar() {
     <aside className="h-full min-h-screen w-72 border-r border-white/10 bg-bg-card p-6 shadow-[0_24px_60px_rgba(0,0,0,0.34)]">
       <div className="flex h-full flex-col justify-between">
         <div>
+          {/* This sidebar is mostly decorative/navigation scaffolding for the
+              dashboard shell. The live data still lives in the main panels. */}
           <div className="mb-8 flex items-center gap-3 rounded-[1.2rem] border border-white/10 bg-bg-surface/70 px-3 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_18px_30px_rgba(0,0,0,0.2)]">
             <div className="brand-mark grid h-10 w-10 shrink-0 place-items-center rounded-2xl text-accent-light">
               <Sparkles className="h-4 w-4" />

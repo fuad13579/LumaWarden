@@ -1,4 +1,9 @@
-"""Alert calculation logic for office-hours and long-running room rules."""
+"""Alert calculation logic for office-hours and long-running room rules.
+
+Alerting is intentionally deterministic: given the same snapshot, it produces
+the same alerts. That makes the dashboard and Discord bot consistent and keeps
+the demo easy to reason about.
+"""
 
 from __future__ import annotations
 
@@ -78,7 +83,15 @@ def _make_alert(
 
 
 def calculate_alerts(devices: list[dict], now: datetime | None = None) -> list[dict]:
-	"""Calculate deterministic alerts from the current device snapshot."""
+	"""Calculate deterministic alerts from the current device snapshot.
+
+	The function is split into two passes for clarity:
+	1. emit device-level after-hours alerts
+	2. emit room-level long-running alerts
+
+	This structure maps directly to the problem statement and keeps the rules
+	easy to explain during a review.
+	"""
 
 	if not devices:
 		return []
@@ -92,6 +105,8 @@ def calculate_alerts(devices: list[dict], now: datetime | None = None) -> list[d
 	devices_by_room: dict[str, list[dict]] = defaultdict(list)
 
 	# First pass: group devices by room and emit per-device after-hours alerts.
+	# The alert is only raised when a device is ON outside office hours, which is
+	# a simple but effective way to surface wasted energy in the demo.
 	for device in devices:
 		room = device.get("room")
 		device_id = device.get("id")
@@ -116,6 +131,8 @@ def calculate_alerts(devices: list[dict], now: datetime | None = None) -> list[d
 			)
 
 	# Second pass: inspect each room as a whole for the long-running condition.
+	# The room rule is stricter because it represents a broader office-level
+	# inefficiency rather than a single forgotten device.
 	for room, room_devices in devices_by_room.items():
 		if len(room_devices) != ROOM_DEVICE_COUNT:
 			continue
@@ -148,4 +165,3 @@ def calculate_alerts(devices: list[dict], now: datetime | None = None) -> list[d
 			)
 
 	return alerts
-

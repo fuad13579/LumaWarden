@@ -1,4 +1,10 @@
-"""Background simulator for changing device states over time."""
+"""Background simulator for changing device states over time.
+
+The simulator is deliberately simple: it flips a handful of random devices every
+few seconds to keep the UI alive during the demo. The important part is not the
+randomness itself, but that every change goes through the shared store so the
+frontend, backend, and Discord bot all see the same reality.
+"""
 
 from __future__ import annotations
 
@@ -15,7 +21,15 @@ MAX_CHANGES_PER_TICK = 3
 
 
 async def _run_tick(broadcast_snapshot: Callable[[dict], Awaitable[None]]) -> None:
-	"""Apply one simulator tick and broadcast a fresh snapshot after real changes."""
+	"""Apply one simulator tick and broadcast a fresh snapshot after real changes.
+
+	A tick is small on purpose:
+	- read the current live device list
+	- choose a few unique devices to toggle
+	- broadcast only if at least one device actually changed
+
+	This keeps the dashboard active without spamming duplicate updates.
+	"""
 
 	# Read the current store state once per tick so the simulator acts on live device data.
 	devices = store.get_devices()
@@ -37,7 +51,12 @@ async def _run_tick(broadcast_snapshot: Callable[[dict], Awaitable[None]]) -> No
 
 
 async def run_simulator(broadcast_snapshot: Callable[[dict], Awaitable[None]]) -> None:
-	"""Run the background simulator until cancelled."""
+	"""Run the background simulator until cancelled.
+
+	The sleep interval is intentionally random so the dashboard feels more like a
+	live office than a metronome. If one tick fails, the loop keeps running so the
+	simulator does not die during a demo.
+	"""
 
 	while True:
 		try:
@@ -49,4 +68,3 @@ async def run_simulator(broadcast_snapshot: Callable[[dict], Awaitable[None]]) -
 		except Exception:
 			# Keep the simulator alive even if one tick fails.
 			continue
-
