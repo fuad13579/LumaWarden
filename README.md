@@ -1,45 +1,23 @@
 # LumaWarden
 
-LumaWarden is a simulated smart-office monitoring system built for the hackathon problem statement. It has one shared FastAPI backend that acts as the single source of truth for:
+LumaWarden is a simulated smart-office power monitoring system built for Techathon 2026 Preliminary Round.
+It has one shared FastAPI backend that acts as the single source of truth for:
 
 - the React/Vite dashboard
 - the Discord bot
 - live device state, power usage, and alerts
 - a background simulator that produces realistic office activity
 
-- Frontend dashboard: React + Vite, reads live REST and WebSocket data from the backend.
-- Dashboard visualization: statement-style office floor plan with live light/fan indicators.
-- Energy view: live whole-office watts, per-room wattage bar chart, and after-hours waste summary.
-- Discord bot: reads the same backend APIs and never generates its own device state.
-- Circuit concept: Wokwi representative hardware for one room, used as a demo schematic.
-- Architecture diagram: [diagrams/lumawarden-architecture-diagram.drawio](diagrams/lumawarden-architecture-diagram.drawio) and [diagrams/architecture-diagram.png](diagrams/architecture-diagram.png).
-- Circuit docs: [diagrams/circuit-explanation.md](diagrams/circuit-explanation.md), [diagrams/pin-mapping.md](diagrams/pin-mapping.md), and [diagrams/wokwi-link.md](diagrams/wokwi-link.md).
+The project uses the fixed 3-room office layout from the statement:
 
 - Drawing Room
 - Work Room 1
 - Work Room 2
 
-1. Start the backend.
-2. Start the frontend dashboard.
-3. Open the dashboard in a browser.
-4. Show live power, device, and alert updates.
-5. Show the office floor plan: yellow lights turn on/off and fans rotate when active.
-6. Show the power panel: total watts, per-room bar chart, and after-hours waste summary.
-7. Show the Discord bot commands: `!status`, `!room work1`, `!usage`, and `!summary`.
-8. Point judges to the architecture and circuit docs above.
+Each room has:
 
 - 2 fans
 - 3 lights
-
-- Live backend source of truth is used by both the dashboard and the bot.
-- Device states, room usage, and alerts update from the shared backend snapshot.
-- The floor visualization reflects backend device state instead of static artwork.
-- The power chart compares current room wattage as categories, not as a time-series trend.
-- After-hours alerts and waste estimates are calculated from backend device state.
-- The dashboard is responsive on mobile, tablet, laptop, and desktop widths.
-- There is no fake-looking clickable UI in the top header.
-- The project documents the architecture diagram and circuit schematic.
-- Setup commands and environment variables are clearly documented below.
 
 ## Repository Layout
 
